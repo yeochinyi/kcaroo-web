@@ -1,0 +1,46 @@
+
+<div>
+<input ng-model="query"><BR><BR>
+
+<select ng-model="orderProp">
+  <option ng:repeat="k in headers" value="{{k}}">{{k | cleanCol}}</option>
+</select> <BR><BR>
+
+<table id='data-table' border='1px' class='table table-bordered'>
+  <thead>
+    <tr >
+      <th ng:repeat='k in headers' ng-click='sort(k)'>{{k | cleanCol}} </th>
+    </tr>
+  </thead>
+  <tbody>
+      <tr class='phone-listing' ng:repeat='i in data | filter:query | orderBy:orderProp'>
+        <td ng:repeat='k in headers' ng-click='select(i["id"],i[k])'>{{ i[k] }}</td>        
+      </tr>
+  </tbody>  
+</table>
+
+<BR><BR>
+
+<form class="my-form">
+  <table id='edit-table' border='1px'>
+    <thead>
+      <tr><th>Field</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat='k in headers' class='phone-listing'>
+        <td>{{k | cleanCol}}</td>
+        <td>
+          <input ng-if='k.indexOf("_id") == -1' type='text' ng-model='selectObj[k]' ng-disabled='k == "id"'>
+          <div ng-if='k.indexOf("_id") != -1'>
+            <select  ng-model='selectObj[k]' width='100%' >
+              <option ng:repeat="v in mapOfMap[k]" value="{{v.id}}">{{v.name}}</option>
+            </select>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>  
+  <input type='submit' ng-click='submit()'>
+</form>
+Submitted Data : {{submitted}}
+</div>
