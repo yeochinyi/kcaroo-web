@@ -54,7 +54,7 @@ factory('SyncDataFactory',['$resource','$q','$timeout', function($resource,$q,$t
     sync : sync,
   }
 }]).
-controller('DataTableCtrl', ['$scope','DataFactory','$timeout', function($scope,DataFactory,$timeout){
+controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($scope,DataFactory,$timeout,$q){
     
     var mapOfMap= {}; // store all ref Tables
     var map = {}; //map of id vs row.. use for cell selection
@@ -80,21 +80,41 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout', function($scope,
 
             var refData = DataFactory.query({table:refTable});
 
-            promises.push(refData.$promise);
+            //promises.push(refData.$promise);
 
-            refData.$promise.then(function(data){
+            promises.push(refData.$promise.then(function(data){
               var refMap = {};
-              for(var ri in refData) {
-                var refId = refData[ri].id;
-                refMap[refId] = refData[ri];
+              for(var i = 0; i < refData.length; i++) {
+                var refId = refData[i].id;
+                refMap[refId] = refData[i];
               };            
               //store into a map for ref
               mapOfMap[refTable] = refMap;
               mapOfMap[refTable + '_id'] = refMap;
-            });    
+            }));    
           };
         };      
       };
+
+      $q.all(promises).then(function(){
+        $scope.headers = headers;        
+        $scope.mapOfMap = mapOfMap;
+
+        var displayData = [];
+          for(var i = 0; i < data.length; i++) {
+          var map = {};
+          for(var ii in headers){
+            var h = headers[ii];
+            var value = data[i][h];
+            var refValue = getRefValue(value,h)
+            map[h] = refValue;
+          } 
+          displayData.push(map);
+        };
+        $scope.data = displayData;
+      });
+
+      /*
 
       $timeout(function(){
         $scope.headers = headers;        
@@ -110,7 +130,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout', function($scope,
         $scope.data = displayData;
 
 
-      },1000);
+      },1000);*/
 
     });
 

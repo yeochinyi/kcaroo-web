@@ -32,7 +32,7 @@
         <td>
           <input ng-if='k.indexOf("_id") == -1' type='text' ng-model='selectObj[k]' ng-disabled='k == "id"'>
           <div ng-if='k.indexOf("_id") != -1'>
-            <select  ng-model='selectObj[k]' width='100%' >
+            <select  ng-model='selectObj[k]' style='width:100%' >
               <option ng:repeat="v in mapOfMap[k]" value="{{v.id}}">{{v.name}}</option>
             </select>
           </div>
