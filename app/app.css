@@ -29,11 +29,11 @@
   padding: 0;
 }
 
- .my-form {
-   -webkit-transition:all linear 0.5s;
-   transition:all linear 0.5s;
-   background: transparent;
- }
- .my-form.ng-invalid {
-   background: red;
- }
+.my-form {
+ -webkit-transition:all linear 0.5s;
+ transition:all linear 0.5s;
+ background: transparent;
+}
+.my-form.ng-invalid {
+ background: red;
+}

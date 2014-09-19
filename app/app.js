@@ -55,7 +55,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     var mapOfMap= {}; 
     //map of current table id vs real key:value
     //use for cell selection
-    var map = {}; 
+    var realObj = {}; 
     //current table headers array is used as index
     var headers = [];
 
@@ -69,7 +69,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
       //Get Data
       for(var i in data) {
         var id = data[i].id;
-        map[id] = data[i];
+        realObj[id] = data[i];
       };
 
       //wait for combined promises
@@ -127,9 +127,9 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     }
 
     function getRefValue(value,refTable){
-      var map = mapOfMap[refTable];
-      if(map == null) return value;
-      var refValue = map[value];
+      var refMap = mapOfMap[refTable];
+      if(refMap == null) return value;
+      var refValue = refMap[value];
       return refValue == null ? value : refValue.name;
     }
 
@@ -138,7 +138,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     };
 
     $scope.select = function(id,field){      
-      $scope.formObj = angular.copy(map[id]);
+      $scope.formObj = angular.copy(realObj[id]);
     };
 
     $scope.clone = function(){      
@@ -151,8 +151,6 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
       var formObj = $scope.formObj;
       //$scope.displayData.pop(formObj.id);
       //$scope.displayData.push(getDisplayData(formObj));
-      $s
-
     };
 
     $scope.delete = function(){      
@@ -161,8 +159,6 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     $scope.clear = function(){      
       $scope.formObj = {};
     };
-
-
     //$scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
     //  event.preventDefault();
     //});
@@ -176,10 +172,8 @@ controller('TestCtrl', ['$scope','$http','DataFactory', 'SyncDataFactory','$q','
     data.$promise.then(function(data){
       $scope.data = data;
     });
-
     /*
     var promise = SyncDataFactory.sync();
-
     promise.then(function(data){
       $scope.data = data;
     }, function(reason){
@@ -187,8 +181,6 @@ controller('TestCtrl', ['$scope','$http','DataFactory', 'SyncDataFactory','$q','
     }, function(update){
       $scope.data = update;
     });*/
-
-
 }]).
 filter('cleanCol',function(){
   return function(input){    
@@ -197,11 +189,16 @@ filter('cleanCol',function(){
     return r.toUnderscore();
   }
 }).
-controller('FormCtrl', function($scope){
-    $scope.submit = function(){
-      $scope.submitted = '';
-    };
-
+filter('customFilter',function(){
+  return function(array, function(){    
+    var filtered = [];
+      angular.forEach(items, function(item) {
+        if( userAccessLevel >= item.minAccess ) {
+          filtered.push(item);
+        }
+      });
+      return filtered;
+  }
 }).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider
