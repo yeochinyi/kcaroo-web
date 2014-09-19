@@ -1,46 +1,67 @@
+<div class="row well">
 
-<div>
-<input ng-model="query"><BR><BR>
+  <div class="col-sm-3">
+   <div class="btn-group" dropdown is-open="status.isopen">
+      <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
+        Button dropdown <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu">
+        <li><a href="#">Action</a></li>
+        <li class="divider"></li>
+        <li><a href="#">Separated link</a></li>
+      </ul>
+    </div>
+  </div>
 
-<select ng-model="orderProp">
-  <option ng:repeat="k in headers" value="{{k}}">{{k | cleanCol}}</option>
-</select> <BR><BR>
+  <div class="col-sm-3">
+    Search :
+    <span class="glyphicon glyphicon-search"></span>
+    <input ng-model="query">
+  </div>
 
-<table id='data-table' border='1px' class='table table-bordered'>
-  <thead>
-    <tr >
-      <th ng:repeat='k in headers' ng-click='sort(k)'>{{k | cleanCol}} </th>
-    </tr>
-  </thead>
-  <tbody>
-      <tr class='phone-listing' ng:repeat='i in data | filter:query | orderBy:orderProp'>
-        <td ng:repeat='k in headers' ng-click='select(i["id"],i[k])'>{{ i[k] }}</td>        
-      </tr>
-  </tbody>  
-</table>
+<div class="col-sm-3">
+  Order By:
+  <select ng-model="orderProp">
+    <option ng:repeat="k in headers" value="{{k}}">{{k | cleanCol}}</option>
+  </select>
+</div>
 
-<BR><BR>
+</div>
 
-<form class="my-form">
-  <table id='edit-table' border='1px'>
+<div class="row">
+  <table id='data-table' class='table table-bordered table-striped table-hover table-condensed'>
     <thead>
-      <tr><th>Field</th><th>Value</th></tr>
+      <tr >
+        <th class="text-capitalize" ng:repeat='k in headers' ng-click='sort(k)'>{{k | cleanCol}} </th>
+      </tr>
     </thead>
     <tbody>
-      <tr ng-repeat='k in headers' class='phone-listing'>
-        <td>{{k | cleanCol}}</td>
-        <td>
-          <input ng-if='k.indexOf("_id") == -1' type='text' ng-model='selectObj[k]' ng-disabled='k == "id"'>
+        <tr ng:repeat='v in displayData | filter:query | orderBy:orderProp track by v.id'>
+          <td ng:repeat='k in headers' ng-click='select(v.id,v[k])'>{{ v[k] }}</td>        
+        </tr>
+    </tbody>  
+  </table>
+</div>
+
+<div class="row well">
+  <form class='form-horizontal' role='form'>
+    <div class='form-group' ng-repeat='k in headers'>
+        <label for='{{k}}' class='col-sm-1 control-label text-capitalize'>{{k | cleanCol}}</label>          
+        <div class='col-sm-11'>
+          <input class='form-control' ng-if='k.indexOf("_id") == -1' type='text' placeholder='Enter Text' ng-model='formObj[k]' ng-disabled='k == "id"'>
           <div ng-if='k.indexOf("_id") != -1'>
-            <select  ng-model='selectObj[k]' style='width:100%' >
+            <select class='form-control' ng-model='formObj[k]'>
               <option ng:repeat="v in mapOfMap[k]" value="{{v.id}}">{{v.name}}</option>
             </select>
           </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>  
-  <input type='submit' ng-click='submit()'>
-</form>
-Submitted Data : {{submitted}}
+        </div>
+    </div>
+    <div class='col-sm-2'></div>
+    <div class='col-sm-10 btn-group btn-group-lg'>
+      <button type="button" ng-click="clone()" class="btn btn-primary">Clone</button>
+      <button type="button" ng-click="update()" class="btn btn-warning">Update</button>
+      <button type="button" ng-click="delete()" class="btn btn-danger">Delete</button>
+      <button type="button" ng-click="clear()" class="btn btn-default">Clear</button>
+    </div>
+  </form>
 </div>

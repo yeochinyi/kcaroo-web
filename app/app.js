@@ -17,9 +17,7 @@ angular.module('myApp', [
   'ngRoute',
   'ngAnimate',
   'ngResource',
-  'myApp.view1',
-  'myApp.view2',
-  'myApp.version'
+  'ui.bootstrap',
 ]).
 factory('DataFactory',['$resource', function($resource) {
   var p = $resource('sample/:table.json',{},{
@@ -27,15 +25,13 @@ factory('DataFactory',['$resource', function($resource) {
   });
   return p;
 }]).
+/*
 factory('SyncDataFactory',['$resource','$q','$timeout', function($resource,$q,$timeout) {
 
   function sync() {
-
     var deferred = $q.defer();
-
     $timeout(function(){
       deferred.notify('Notify!123');
-
       var data = $resource('sample/static1.json');
 
       if(data != null){
@@ -46,21 +42,29 @@ factory('SyncDataFactory',['$resource','$q','$timeout', function($resource,$q,$t
       }
 
     },1000);
-
     return deferred.promise;
   };  
 
   return {
     sync : sync,
   }
-}]).
+}]).*/
 controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($scope,DataFactory,$timeout,$q){
     
-    var mapOfMap= {}; // store all ref Tables
-    var map = {}; //map of id vs row.. use for cell selection
+    // ref tablename vs map value i.e {'static_table_1':{ 1:name1, 2:name2 }, 'static_table_2':{ 1:name1, 2:name2 } }
+    var mapOfMap= {}; 
+    //map of current table id vs real key:value
+    //use for cell selection
+    var map = {}; 
+    //current table headers array is used as index
     var headers = [];
-    var data = DataFactory.query({table:'primary1'});
 
+    // displayMap of id vs display key:value
+    //var displayMap = {};
+
+    var lastId = 0;
+
+    var data = DataFactory.query({table:'primary1'});
     data.$promise.then(function(data){
       //Get Data
       for(var i in data) {
@@ -68,20 +72,16 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
         map[id] = data[i];
       };
 
+      //wait for combined promises
       var promises = [];
-
-      //Get Headers
+      //Get Headers & all necessary static data
       for(var k in data[0]){
-        if(data[0].hasOwnProperty(k)){
+        if(data[0].hasOwnProperty(k)){ //filter out hidden properties like $.
           headers.push(k);
 
           var refTable = extractTableName(k);
           if(refTable != null){
-
             var refData = DataFactory.query({table:refTable});
-
-            //promises.push(refData.$promise);
-
             promises.push(refData.$promise.then(function(data){
               var refMap = {};
               for(var i = 0; i < refData.length; i++) {
@@ -90,49 +90,41 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
               };            
               //store into a map for ref
               mapOfMap[refTable] = refMap;
-              mapOfMap[refTable + '_id'] = refMap;
+              mapOfMap[refTable + '_id'] = refMap; //For easy lookup using col id
             }));    
           };
         };      
       };
-
+      //all promises resolved, time to massage current table data
       $q.all(promises).then(function(){
         $scope.headers = headers;        
         $scope.mapOfMap = mapOfMap;
 
         var displayData = [];
-          for(var i = 0; i < data.length; i++) {
-          var map = {};
-          for(var ii in headers){
-            var h = headers[ii];
-            var value = data[i][h];
-            var refValue = getRefValue(value,h)
-            map[h] = refValue;
-          } 
-          displayData.push(map);
+        //var displayMap = {};
+        for(var i = 0; i < data.length; i++) {
+          displayData.push(getDisplayData(data[i]));
+          //displayMap[data[i]['id']] = getDisplayData(data[i]);
         };
-        $scope.data = displayData;
+        $scope.displayData = displayData;
+        //$scope.displayMap = displayMap;
       });
-
-      /*
-
-      $timeout(function(){
-        $scope.headers = headers;        
-        $scope.mapOfMap = mapOfMap;
-
-        var displayData = {};
-       //
-        for(var i in data) {          
-          for(var h in headers){
-            displayData[h] = getRefValue(data[i][h]);
-          }                    
-        };
-        $scope.data = displayData;
-
-
-      },1000);*/
-
     });
+
+    function getDisplayData(data) {
+      var displayData = {};
+
+      //Store last id for demo
+      if(data['id'] > lastId) lastId = data['id'];
+
+      for(var j in headers){
+        var h = headers[j];
+        var value = data[h];
+        var refValue = getRefValue(value,h)
+        displayData[h] = refValue;
+      }       
+      return displayData
+    }
 
     function getRefValue(value,refTable){
       var map = mapOfMap[refTable];
@@ -146,13 +138,30 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     };
 
     $scope.select = function(id,field){      
-      //$scope.selectObj = map[id];
-      $scope.selectObj = angular.copy(map[id]);
+      $scope.formObj = angular.copy(map[id]);
     };
 
-    $scope.submit = function(){
-      //$scope.submitted = submitted;
+    $scope.clone = function(){      
+      var formObj = $scope.formObj;
+      formObj['id'] = lastId + 1;
+      $scope.displayData.push(getDisplayData(formObj));
     };
+
+    $scope.update = function(){      
+      var formObj = $scope.formObj;
+      //$scope.displayData.pop(formObj.id);
+      //$scope.displayData.push(getDisplayData(formObj));
+      $s
+
+    };
+
+    $scope.delete = function(){      
+    };
+
+    $scope.clear = function(){      
+      $scope.formObj = {};
+    };
+
 
     //$scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
     //  event.preventDefault();
@@ -204,5 +213,5 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: 'views/test.html',
     controller : 'TestCtrl',
   })
-  .otherwise({redirectTo: '/view1'});
+  .otherwise({redirectTo: '/data'});
 }]);
