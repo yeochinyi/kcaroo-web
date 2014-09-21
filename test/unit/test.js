@@ -18,7 +18,7 @@ describe('Test', function() {
 
     beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
       $httpBackend = _$httpBackend_;
-      $httpBackend.expectGET('app/sample/primary1.json').
+      $httpBackend.expectGET('sample/dynamic_table_2.json').
           respond([{name: 'Nexus S'}, {name: 'Motorola DROID'}]);
 
       scope = $rootScope.$new();
@@ -26,11 +26,11 @@ describe('Test', function() {
     }));
 
 
-    it('bababababababa', function() {
-      expect(scope.data).toEqualData([]);
+    it('test it out', function() {
+      //expect(scope.displayData).toEqualData([]);
       $httpBackend.flush();
 
-      expect(scope.data).toEqualData(
+      expect(scope.displayData).toEqualData(
           [{name: 'Nexus S'}, {name: 'Motorola DROID'}]);
     });
 

@@ -3,7 +3,7 @@
   <div class="col-sm-3">
    <div class="btn-group" dropdown is-open="status.isopen">
       <button type="button" class="btn btn-primary dropdown-toggle" ng-disabled="disabled">
-        Button dropdown <span class="caret"></span>
+        Select Table <span class="caret"></span>
       </button>
       <ul class="dropdown-menu" role="menu">
         <li><a href="#">Action</a></li>
@@ -36,8 +36,9 @@
       </tr>
     </thead>
     <tbody>
-        <tr ng:repeat='v in displayData | filter:query | orderBy:orderProp track by v.id'>
-          <td ng:repeat='k in headers' ng-click='select(v.id,v[k])'>{{ v[k] }}</td>        
+        <!--tr ng:repeat='v in displayData | filter:query | orderBy:orderProp track by v.id' -->
+        <tr ng:repeat='v in displayData | filter:filterRefValue | orderBy:orderProp track by v.id'>
+          <td ng:repeat='k in headers' ng-click='select(v.id,v[k])'>{{ v[k] | convert:k:getRefValue }}</td>        
         </tr>
     </tbody>  
   </table>

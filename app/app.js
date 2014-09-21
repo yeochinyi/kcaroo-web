@@ -25,32 +25,10 @@ factory('DataFactory',['$resource', function($resource) {
   });
   return p;
 }]).
-/*
-factory('SyncDataFactory',['$resource','$q','$timeout', function($resource,$q,$timeout) {
-
-  function sync() {
-    var deferred = $q.defer();
-    $timeout(function(){
-      deferred.notify('Notify!123');
-      var data = $resource('sample/static1.json');
-
-      if(data != null){
-        deferred.resolve(data);
-      }
-      else{
-        deferred.reject("Timeout!");
-      }
-
-    },1000);
-    return deferred.promise;
-  };  
-
-  return {
-    sync : sync,
-  }
-}]).*/
 controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($scope,DataFactory,$timeout,$q){
     
+
+
     // ref tablename vs map value i.e {'static_table_1':{ 1:name1, 2:name2 }, 'static_table_2':{ 1:name1, 2:name2 } }
     var mapOfMap= {}; 
     //map of current table id vs real key:value
@@ -64,7 +42,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
 
     var lastId = 0;
 
-    var data = DataFactory.query({table:'primary1'});
+    var data = DataFactory.query({table:'dynamic_table_2'});
     data.$promise.then(function(data){
       //Get Data
       for(var i in data) {
@@ -100,17 +78,16 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
         $scope.headers = headers;        
         $scope.mapOfMap = mapOfMap;
 
-        var displayData = [];
-        //var displayMap = {};
+        /*var displayData = [];
         for(var i = 0; i < data.length; i++) {
           displayData.push(getDisplayData(data[i]));
-          //displayMap[data[i]['id']] = getDisplayData(data[i]);
         };
-        $scope.displayData = displayData;
-        //$scope.displayMap = displayMap;
+        $scope.displayData = displayData;*/
+        $scope.displayData = data;
       });
     });
 
+    
     function getDisplayData(data) {
       var displayData = {};
 
@@ -118,13 +95,13 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
       if(data['id'] > lastId) lastId = data['id'];
 
       for(var j in headers){
-        var h = headers[j];
-        var value = data[h];
-        var refValue = getRefValue(value,h)
+        var h = headers[j]; 
+        var value = data[h];              
+        var refValue = getRefValue(value,j);
         displayData[h] = refValue;
       }       
       return displayData
-    }
+    }    
 
     function getRefValue(value,refTable){
       var refMap = mapOfMap[refTable];
@@ -132,6 +109,8 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
       var refValue = refMap[value];
       return refValue == null ? value : refValue.name;
     }
+
+    $scope.getRefValue = getRefValue;
 
     $scope.sort = function(colName){
       $scope.orderProp = colName;
@@ -144,7 +123,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     $scope.clone = function(){      
       var formObj = $scope.formObj;
       formObj['id'] = lastId + 1;
-      $scope.displayData.push(getDisplayData(formObj));
+      //$scope.displayData.push(getDisplayData(formObj));
     };
 
     $scope.update = function(){      
@@ -159,6 +138,19 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     $scope.clear = function(){      
       $scope.formObj = {};
     };
+
+    $scope.filterRefValue = function(obj){
+      var query = $scope.query;
+      if(!query) return true;
+      var display = getDisplayData(obj);
+      for(var k in display){
+        if(k == 'id') continue;
+        if(display.hasOwnProperty(k) && display[k].indexOf(query) != -1) return true
+      }
+      return false;
+    };
+
+
     //$scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
     //  event.preventDefault();
     //});
@@ -189,15 +181,9 @@ filter('cleanCol',function(){
     return r.toUnderscore();
   }
 }).
-filter('customFilter',function(){
-  return function(array, function(){    
-    var filtered = [];
-      angular.forEach(items, function(item) {
-        if( userAccessLevel >= item.minAccess ) {
-          filtered.push(item);
-        }
-      });
-      return filtered;
+filter('convert',function(){
+  return function(value,idx,fn){
+    return fn(value,idx);      
   }
 }).
 config(['$routeProvider', function($routeProvider) {
