@@ -1,38 +1,118 @@
 'use strict';
 
 /* jasmine specs for controllers go here */
-describe('Test', function() {
+describe('DataTableCtrl', function() {
 
   beforeEach(function(){
     this.addMatchers({
-      toEqualData: function(expected) {
+      equals: function(expected) {
         return angular.equals(this.actual, expected);
       }
     });
   });
 
   beforeEach(module('myApp'));
+    
+  var scope, ctrl, httpBackend;
+  
+  beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
+    httpBackend = _$httpBackend_;      
+    //httpBackend.expectGET(/.*/).
+    httpBackend.expectGET('sample/dynamic_table_2.json').respond([
+      {
+          "id": 1,
+          "name": "dname1",
+          "static_table_1_id": 2
+      },
+      {
+          "id": 2,
+          "name": "dname2",
+          "static_table_1_id": 1
+      }
+    ]);
+    httpBackend.expectGET('sample/static_table_1.json').respond([
+      {
+          "id": 1,
+          "name": "sname1",
+      },
+      {
+          "id": 2,
+          "name": "sname2",
+      }
+    ]);
 
-  describe('DataTableCtrl', function(){
-    var scope, ctrl, $httpBackend;
+    scope = $rootScope.$new();
+    ctrl = $controller('DataTableCtrl', {$scope: scope});
+    scope.$apply();
+  }));
 
-    beforeEach(inject(function(_$httpBackend_, $rootScope, $controller) {
-      $httpBackend = _$httpBackend_;
-      $httpBackend.expectGET('sample/dynamic_table_2.json').
-          respond([{name: 'Nexus S'}, {name: 'Motorola DROID'}]);
+    
+  it('clone/update/delete', function() {
+    //expect(scope.displayData).equals([]);
+    httpBackend.flush();      
+    expect(scope.displayData).equals([
+      {
+          "id": 1,
+          "name": "dname1",
+          "static_table_1_id": 2
+      },
+      {
+          "id": 2,
+          "name": "dname2",
+          "static_table_1_id": 1
+      }
+    ]);
 
-      scope = $rootScope.$new();
-      ctrl = $controller('DataTableCtrl', {$scope: scope});
-    }));
+    scope.formObj = {
+          "id": 1,
+          "name": "dname3",
+          "static_table_1_id": 2
+      };
+    scope.clone();
+    expect(scope.displayData).equals([
+      {
+          "id": 1,
+          "name": "dname1",
+          "static_table_1_id": 2
+      },
+      {
+          "id": 2,
+          "name": "dname2",
+          "static_table_1_id": 1
+      },
+      {
+          "id": 3,
+          "name": "dname3",
+          "static_table_1_id": 2
+      }
+    ]);
+    scope.formObj = {
+          "id": 1,
+          "name": "dname3",
+          "static_table_1_id": 2
+      };
+
+    scope.update();
+    expect(scope.displayData).equals([
+      {
+          "id": 1,
+          "name": "dname3",
+          "static_table_1_id": 2
+      },
+      {
+          "id": 2,
+          "name": "dname2",
+          "static_table_1_id": 1
+      },
+      {
+          "id": 3,
+          "name": "dname3",
+          "static_table_1_id": 2
+      }
+    ]);
 
 
-    it('test it out', function() {
-      //expect(scope.displayData).toEqualData([]);
-      $httpBackend.flush();
 
-      expect(scope.displayData).toEqualData(
-          [{name: 'Nexus S'}, {name: 'Motorola DROID'}]);
-    });
 
   });
 });

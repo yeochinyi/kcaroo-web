@@ -25,38 +25,31 @@ factory('DataFactory',['$resource', function($resource) {
   });
   return p;
 }]).
-controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($scope,DataFactory,$timeout,$q){
+controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',function($scope,DataFactory,$timeout,$q,$modal){
     
-
-
     // ref tablename vs map value i.e {'static_table_1':{ 1:name1, 2:name2 }, 'static_table_2':{ 1:name1, 2:name2 } }
     var mapOfMap= {}; 
     //map of current table id vs real key:value
     //use for cell selection
-    var realObj = {}; 
+    var idObjMap = {}; 
     //current table headers array is used as index
     var headers = [];
-
-    // displayMap of id vs display key:value
-    //var displayMap = {};
-
-    var lastId = 0;
 
     var data = DataFactory.query({table:'dynamic_table_2'});
     data.$promise.then(function(data){
       //Get Data
       for(var i in data) {
         var id = data[i].id;
-        realObj[id] = data[i];
+        idObjMap[id] = data[i];
       };
 
       //wait for combined promises
       var promises = [];
       //Get Headers & all necessary static data
-      for(var k in data[0]){
-        if(data[0].hasOwnProperty(k)){ //filter out hidden properties like $.
+      //for(var k in data[0]){
+      angular.forEach(data[0], function(value, k){            
+        //if(data[0].hasOwnProperty(k)){ //filter out hidden properties like $.
           headers.push(k);
-
           var refTable = extractTableName(k);
           if(refTable != null){
             var refData = DataFactory.query({table:refTable});
@@ -71,8 +64,8 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
               mapOfMap[refTable + '_id'] = refMap; //For easy lookup using col id
             }));    
           };
-        };      
-      };
+        //};      
+      });
       //all promises resolved, time to massage current table data
       $q.all(promises).then(function(){
         $scope.headers = headers;        
@@ -91,13 +84,10 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     function getDisplayData(data) {
       var displayData = {};
 
-      //Store last id for demo
-      if(data['id'] > lastId) lastId = data['id'];
-
       for(var j in headers){
         var h = headers[j]; 
         var value = data[h];              
-        var refValue = getRefValue(value,j);
+        var refValue = getRefValue(value,h);
         displayData[h] = refValue;
       }       
       return displayData
@@ -117,37 +107,99 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q', function($s
     };
 
     $scope.select = function(id,field){      
-      $scope.formObj = angular.copy(realObj[id]);
+      $scope.formObj = angular.copy(idObjMap[id]);
+    };
+
+    function findDisplayData(obj, isReplace){
+      for(var i in $scope.displayData){
+        if($scope.displayData[i]['id'] == obj['id']){
+          if(isReplace){
+            $scope.displayData.splice(i,1,obj);
+          }
+          return;
+        }
+      }
+    };
+
+    function add(obj){
+      idObjMap[obj['id']] = obj;
+      $scope.displayData.push(obj);
+    };
+
+    function update(obj){
+      idObjMap[obj['id']] = obj;
+      findDisplayData(obj,true);
+    };
+
+    function remove(obj){
+      idObjMap[obj['id']] = undefined;
+      findDisplayData(obj,false);
+    };
+
+
+    function getLastId(){
+      var id = 0;
+      for(var i in idObjMap){
+        var c = idObjMap[i]['id'];
+        if(c > id) id = c;
+      }
+      return id;
     };
 
     $scope.clone = function(){      
       var formObj = $scope.formObj;
-      formObj['id'] = lastId + 1;
-      //$scope.displayData.push(getDisplayData(formObj));
+      formObj['id'] = getLastId() + 1;
+      add(formObj);
+      modalInstance.close();
     };
 
     $scope.update = function(){      
       var formObj = $scope.formObj;
-      //$scope.displayData.pop(formObj.id);
-      //$scope.displayData.push(getDisplayData(formObj));
+      update(formObj);
+      modalInstance.close();
     };
 
-    $scope.delete = function(){      
+    $scope.delete = function(){ 
+      //remove(formObj);
+      //soft delete
+      var formObj = $scope.formObj;
+      formObj['$ops'] = 'delete';
+      update(formObj);
+      modalInstance.close();
     };
 
     $scope.clear = function(){      
       $scope.formObj = {};
     };
 
+    $scope.rowClass = function(row){
+      if(row.$ops == 'delete')
+        return 'strike';
+      return '';
+    };
+
     $scope.filterRefValue = function(obj){
       var query = $scope.query;
       if(!query) return true;
       var display = getDisplayData(obj);
+      
       for(var k in display){
         if(k == 'id') continue;
         if(display.hasOwnProperty(k) && display[k].indexOf(query) != -1) return true
       }
       return false;
+    };
+
+    var modalInstance;
+
+    $scope.openModal = function(id,field){
+      $scope.formObj = angular.copy(idObjMap[id]);
+      modalInstance = $modal.open({
+        templateUrl : 'editModal',
+        //controller : 'DataTableCtrl',
+        size : 'lg',        
+        scope : $scope,
+      });
     };
 
 
