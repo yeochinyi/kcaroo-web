@@ -69,3 +69,7 @@
   opacity:1;
   max-height:40px;
 }
+
+.glyphicon-remove {
+  float:right;
+}

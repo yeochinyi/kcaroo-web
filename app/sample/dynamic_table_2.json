@@ -3,24 +3,24 @@
         "id": 1,
         "name": "name1",
         "desc": "desc1",
-        "static_table_1_id": 1
+        "static_table_1_refid": 1
     },
     {
         "id": 2,
         "name": "name2",
         "desc": "desc2",
-        "static_table_1_id": 2
+        "static_table_1_refid": 2
     },
     {
         "id": 3,
         "name": "name3",
         "desc": "desc3",
-        "static_table_1_id": 3
+        "static_table_1_refid": 3
     },
     {
         "id": 4,
         "name": "name4",
         "desc": "desc4",
-        "static_table_1_id": 4
+        "static_table_1_refid": 4
     }
 ]
