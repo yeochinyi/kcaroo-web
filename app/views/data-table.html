@@ -2,9 +2,9 @@
 
   <div class="col-sm-4">
     <div class='form-group'>
-      <label class=' control-label'>Select Table</label>
-      <select class='form-control' ng-model='currentTable'>
-        <option ng:repeat="t in tables">{{t}}</option>
+      <label class='control-label'>Select Table</label>
+      <select class='form-control' ng-model='currentTable' ng-options="t for t in tables">
+        
       </select>      
     </div>
   </div>
@@ -32,12 +32,12 @@
   <table id='data-table' class='table table-bordered table-striped table-hover table-condensed'>
     <thead>
       <tr>
-        <th class="text-capitalize"  ng:repeat='k in dTable.currHeaders()' ng-hide='k.hide'><span ng-click='sort(k.id)'>{{k.named | cleanCol}}</span><span class="glyphicon glyphicon-remove" ng-click='hide(k.id)'></span></th>
+        <th class="text-capitalize"  ng:repeat='k in dTable.currHeaders()' ng-class='{rotate_cell:k.hide}'><span ng-class='{rotate:k.hide}' ng-click='sort(k.id)'><span class='glyphicon' ng-class='{"glyphicon-zoom-out": !k.hide, "glyphicon-zoom-in": k.hide}' ng-click='hide(k,!k.hide)'><span>{{ k.getDisplay()  | cleanCol}}</span></span></span> </th>
       </tr>
     </thead>
     <tbody>
         <tr class='animate-repeat' ng-class='rowClass(v)' ng:repeat='v in dTable.currData() | filter:filterRefValue | orderBy:orderProp track by v.id'>
-          <td ng:repeat='k in dTable.currHeaders()' ng-hide='k.hide' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:getRefValue }}</td>          
+          <td ng:repeat='k in dTable.currHeaders()' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:translate }}</td>          
         </tr>
     </tbody>  
   </table>

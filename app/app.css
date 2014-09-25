@@ -1,5 +1,9 @@
 /* app css stylesheet */
 
+th, td {
+  text-align: center;
+}
+
 .menu {
   list-style: none;
   border-bottom: 0.1em solid black;
@@ -73,3 +77,22 @@
 .glyphicon-remove {
   float:right;
 }
+
+
+.rotate {
+  display:block;
+        -moz-transform:rotate(-90deg); 
+         -moz-transform-origin: top left;
+         -webkit-transform: rotate(-90deg);
+         -webkit-transform-origin: top left;
+         -o-transform: rotate(-90deg);
+         -o-transform-origin:  top left;
+          position:relative;
+         top:20px;
+}
+  .rotate_cell
+      {
+         height:200px;
+         width: 10px;
+         vertical-align:bottom;
+      }
