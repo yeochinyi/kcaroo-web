@@ -2,6 +2,10 @@ exports.config = {
   allScriptsTimeout: 11000,
 
   specs: [
+    'app/js/override.js',
+    'app/js/datastruct.js',
+    'app/app.js',
+    'test/unit/test.js',
     '*.js'
   ],
 

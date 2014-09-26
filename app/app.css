@@ -81,18 +81,18 @@ th, td {
 
 .rotate {
   display:block;
-        -moz-transform:rotate(-90deg); 
-         -moz-transform-origin: top left;
-         -webkit-transform: rotate(-90deg);
-         -webkit-transform-origin: top left;
-         -o-transform: rotate(-90deg);
-         -o-transform-origin:  top left;
-          position:relative;
-         top:20px;
+  -moz-transform:rotate(-90deg); 
+  -moz-transform-origin: top left;
+  -webkit-transform: rotate(-90deg);
+  -webkit-transform-origin: top left;
+  -o-transform: rotate(-90deg);
+  -o-transform-origin:  top left;
+  position:relative;
+  top:20px;
 }
-  .rotate_cell
-      {
-         height:200px;
-         width: 10px;
-         vertical-align:bottom;
-      }
+.rotate_cell
+{
+ height:200px;
+ width: 10px;
+ vertical-align:bottom;
+}

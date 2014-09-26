@@ -12,8 +12,10 @@ module.exports = function(config){
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
-      'app/*.js',
-      'test/unit/**/*.js'
+      'app/js/override.js',
+      'app/js/datastruct.js',
+      'app/app.js',
+      'test/unit/test.js'
     ],
 
     autoWatch : true,

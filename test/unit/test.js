@@ -6,7 +6,11 @@ describe('DTable',function(){
   beforeEach(function(){
     this.addMatchers({
       equals: function(expected) {
-        return angular.equals(this.actual, expected);
+        this.message = function() {
+          //return 'Expected ->\n' +  prettyPrint(expected) + '\n VS \nActual->\n' + prettyPrint(this.actual);
+          return 'Expected ->\n' +  expected.prettyString() + '\n VS \nActual->\n' + this.actual.prettyString();
+        }
+        return angular.equals(this.actual, expected);        
       }
     });
   });  
@@ -22,12 +26,12 @@ describe('DTable',function(){
         'table2_refid': 2,
         'name1-table2_refid': 1,
       },
-      {
+      /*{
         'id': 2,
         'name': 't12',
         'table2_refid': 1,
         'name1-table2_refid': 2,
-      }
+      }*/
     ]);
 
     d.addData('table2',
@@ -43,16 +47,37 @@ describe('DTable',function(){
     ]);    
 
     d.currTable = 'table1';
-    d.expandHeaders('table1');
+    //d.expandHeaders('table1');
 
     expect(d.hasTable('table1')).equals(true);
     
-    expect(d.currHeaders()).equals(
+    //var headers = deleteBlankProp(d.currHeaders());
+    var headers = d.currHeaders();
+
+    expect(headers).equals(
       [
-        { id : 'id', hide : false, named : 'id', }, 
-        { id : 'name', hide : false, named : 'name', }, 
-        { id : 'table2_refid', hide : false, type : 'refid', named : 'table2.name', ref : 'table2', rel_col : 'name' }, 
-        { id : 'name1-table2_refid', hide : false, type : 'refid', named : 'name1.name', ref : 'table2', rel_col : 'name' }
+        { id : 'id',    hide : false, named : 'id', }, 
+        { id : 'name',  hide : false, named : 'name', }, 
+        { id : 'table2_refid',       hide : true, type : 'refid', named : 'table2', ref : 'table2' }, 
+        { id : 'name1-table2_refid', hide : true, type : 'refid', named : 'name1', ref : 'table2' },
+      ]
+    );
+
+    for(var i in headers){
+      var header = headers[i];
+      if(header.id === 'table2_refid') header.hide = false;
+    };
+
+    headers = d.currHeaders();
+
+    expect(headers).equals(
+      [      
+        { id : 'id',    hide : false, named : 'id', }, 
+        { id : 'name',  hide : false, named : 'name', }, 
+        { id: 'name', hide: false, named: 'name', 
+          parentHeader : { id : 'table2_refid', hide : false, type : 'refid', named : 'table2', ref : 'table2' } 
+        }, //belongs to ref table
+        { id : 'name1-table2_refid', hide : true, type : 'refid', named : 'name1', ref : 'table2' },
       ]
     );
 
@@ -60,7 +85,7 @@ describe('DTable',function(){
 });
 
 
-
+/*
 describe('DataTableCtrl', function() {
 
   beforeEach(function(){
@@ -175,7 +200,6 @@ describe('DataTableCtrl', function() {
           "name": "dname3",
           "static_table_1_id": 2
       }
-    ]);*/
+    ]);
   });
-
-});
+)};*/
