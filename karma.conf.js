@@ -1,9 +1,24 @@
-module.exports = function(config){
+// Karma configuration
+// Generated on Mon Sep 29 2014 14:26:43 GMT+0800 (Malay Peninsula Standard Time)
+
+module.exports = function(config) {
   config.set({
 
-    basePath : './',
+    // base path, that will be used to resolve files and exclude
+    basePath: '',
 
-    files : [
+
+    // frameworks to use
+    //frameworks: ['jasmine', 'requirejs'],
+    frameworks: ['jasmine'],
+
+
+    // list of files / patterns to load in the browser
+    files: [
+      
+    ],
+
+    files : [      
       'app/bower_components/jquery/dist/jquery.js',
       'app/bower_components/angular/angular.js',
       'app/bower_components/angular-route/angular-route.js',
@@ -12,29 +27,61 @@ module.exports = function(config){
       'app/bower_components/bootstrap/dist/js/bootstrap.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
-      'app/js/override.js',
-      'app/js/datastruct.js',
+      'app/bower_components/underscore/underscore.js',
+      //'app/bower_components/requirejs/require.js',
+      'app/bower_components/t/t.js',
+      'app/js/*.js',
       'app/app.js',
+      //'test/unit/test-main.js'
       'test/unit/test.js'
+    ],    
+
+
+    // list of files to exclude
+    exclude: [
+      
     ],
 
-    autoWatch : true,
 
-    frameworks: ['jasmine'],
+    // test results reporter to use
+    // possible values: 'dots', 'progress', 'junit', 'growl', 'coverage'
+    reporters: ['progress'],
 
-    browsers : ['Chrome'],
 
-    plugins : [
-            'karma-chrome-launcher',
-            'karma-firefox-launcher',
-            'karma-jasmine',
-            'karma-junit-reporter'
-            ],
+    // web server port
+    port: 9876,
 
-    junitReporter : {
-      outputFile: 'test_out/unit.xml',
-      suite: 'unit'
-    }
 
+    // enable / disable colors in the output (reporters and logs)
+    colors: true,
+
+
+    // level of logging
+    // possible values: config.LOG_DISABLE || config.LOG_ERROR || config.LOG_WARN || config.LOG_INFO || config.LOG_DEBUG
+    logLevel: config.LOG_INFO,
+
+
+    // enable / disable watching file and executing tests whenever any file changes
+    autoWatch: true,
+
+
+    // Start these browsers, currently available:
+    // - Chrome
+    // - ChromeCanary
+    // - Firefox
+    // - Opera (has to be installed with `npm install karma-opera-launcher`)
+    // - Safari (only Mac; has to be installed with `npm install karma-safari-launcher`)
+    // - PhantomJS
+    // - IE (only Windows; has to be installed with `npm install karma-ie-launcher`)
+    browsers: ['Chrome'],
+
+
+    // If browser does not capture in given timeout [ms], kill it
+    captureTimeout: 60000,
+
+
+    // Continuous Integration mode
+    // if true, it capture browsers, run tests and exit
+    singleRun: false
   });
 };
