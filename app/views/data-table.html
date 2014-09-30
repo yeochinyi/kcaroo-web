@@ -36,8 +36,10 @@
       </tr>
     </thead>
     <tbody>
-        <tr class='animate-repeat' ng-class='rowClass(v)' ng:repeat='v in dTable.currData() | filter:filterRefValue | orderBy:orderProp track by v.id'>
-          <td ng:repeat='k in dTable.currHeaders()' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:translate }}</td>          
+        <!--tr class='animate-repeat' ng-class='rowClass(v)' ng:repeat='v in dTable.currData() | filter:filterRefValue | orderBy:orderProp track by v.id'>
+          <td ng:repeat='k in dTable.currHeaders()' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:translate }}</td-->
+        <tr class='animate-repeat' ng-class='rowClass(v)' ng:repeat='v in dTable.currData() | filter:query | orderBy:orderProp track by v.id'>
+          <td ng:repeat='k in dTable.currHeaders()' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:translate }}</td>
         </tr>
     </tbody>  
   </table>

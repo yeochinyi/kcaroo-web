@@ -1,5 +1,71 @@
 'use strict';
 
+var skipFn = function(key,obj){ 
+  if(key === 'parent')
+    return true;
+  return false; 
+}
+
+/*
+describe('t-js',function(){
+  it('test traverse', function(){
+    var test =  {
+       name : 'root',
+       child: [ //array
+           { name : 'b1' },
+           { name : 'b2',
+               child: [ //array
+                   { name : 'c1', },
+                   { name : 'c2', }
+               ]
+           }
+       ]
+    };
+
+    var printIt = function(node,par,ctrl){ 
+      console.log(node.name); 
+      if(node.child != undefined) {
+        console.log(' has ' + node.child.length + ' kids!'); 
+      };
+    };
+
+    var config = { 
+      childrenName : 'child',
+      order:'post',
+    };
+
+    console.log("\nBFS\n---\n")
+    t.bfs(test, config, printIt);
+    console.log("\nDFS\n---\n")
+    t.dfs(test, config ,printIt);
+  });
+});*/
+
+/*
+describe('Tree',function(){
+  it('Test Traverse',function(){
+    var tree = new Tree();
+
+    tree.addChildren('', [{id:1}]);
+    tree.addChildren('', [{id:2},{id:3}]);
+
+    tree.addChildren(2,[{id:21},{id:22}]);
+    tree.addChildren(2,{id:23});
+
+    tree.addChildren(1,[{id:11},{id:12},{id:13},]);
+    tree.removeAllChildren(2);
+
+
+    console.log(tree.prettyPrint(0,skipFn));
+
+    var tb = tree.traverseBreadth();
+    console.log('Breadth:\n' + tb.prettyPrint(0,skipFn));
+
+    var te = tree.traverseEdges();
+    console.log('Edge:\n' + te.prettyPrint(0,skipFn));
+  });
+});*/
+
 
 describe('DTable',function(){
 
@@ -7,8 +73,7 @@ describe('DTable',function(){
     this.addMatchers({
       equals: function(expected) {
         this.message = function() {
-          //return 'Expected ->\n' +  prettyPrint(expected) + '\n VS \nActual->\n' + prettyPrint(this.actual);
-          return 'Expected ->\n' +  expected.prettyString() + '\n VS \nActual->\n' + this.actual.prettyString();
+          return 'Expected ->\n' +  expected.prettyPrint() + '\n VS \nActual->\n' + this.actual.prettyPrint();
         }
         return angular.equals(this.actual, expected);        
       }
@@ -26,12 +91,7 @@ describe('DTable',function(){
         'table2_refid': 2,
         'name1-table2_refid': 1,
       },
-      /*{
-        'id': 2,
-        'name': 't12',
-        'table2_refid': 1,
-        'name1-table2_refid': 2,
-      }*/
+
     ]);
 
     d.addData('table2',
@@ -56,33 +116,27 @@ describe('DTable',function(){
 
     expect(headers).equals(
       [
-        { id : 'id',    hide : false, named : 'id', }, 
-        { id : 'name',  hide : false, named : 'name', }, 
-        { id : 'table2_refid',       hide : true, type : 'refid', named : 'table2', ref : 'table2' }, 
-        { id : 'name1-table2_refid', hide : true, type : 'refid', named : 'name1', ref : 'table2' },
+        { id : 'id',    named : 'id', }, 
+        { id : 'name',  named : 'name', }, 
+        { id : 'table2_refid',       type : 'refid', named : 'table2', ref : 'table2' }, 
+        { id : 'name1-table2_refid', type : 'refid', named : 'name1', ref : 'table2' },
       ]
     );
 
-    for(var i in headers){
-      var header = headers[i];
-      if(header.id === 'table2_refid') header.hide = false;
-    };
+    //console.log('headerTree\n----------------\n' + d.currHeaderTree().prettyPrint(0,skipFn));
 
-    headers = d.currHeaders();
+    d.hideHeader('table2_refid',false);
 
-    expect(headers).equals(
-      [      
-        { id : 'id',    hide : false, named : 'id', }, 
-        { id : 'name',  hide : false, named : 'name', }, 
-        { id: 'name', hide: false, named: 'name', 
-          parentHeader : { id : 'table2_refid', hide : false, type : 'refid', named : 'table2', ref : 'table2' } 
-        }, //belongs to ref table
-        { id : 'name1-table2_refid', hide : true, type : 'refid', named : 'name1', ref : 'table2' },
-      ]
-    );
+    console.log('headerTree\n----------------\n' + d.currHeaderTree().prettyPrint(0,skipFn));
 
+    //var headerOpsTB = d.currHeaderTree().traverseBreadth();
+    //console.log('headerOpsTB\n----------------\n' + headerOpsTB.prettyPrint(0,skipFn));
+
+    //var headerOpsEdge = d.currHeaderTree().traverseEdges();  
+    //console.log('headerOpsEdge\n----------------\n' + headerOpsEdge.prettyPrint(0,skipFn));
   });
 });
+
 
 
 /*

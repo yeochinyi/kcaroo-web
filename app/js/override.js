@@ -15,61 +15,90 @@ String.prototype.extracts = function(textArray){
   return undefined;
 };
 
-
 String.prototype.repeat = function(num){
-  var t = this;
-  for(var i = 0;i < num; i++)
+  if(num === 0) return '';
+  var t = this;  
+  for(var i = 1;i < num; i++)
     t += this;
   return t;
 };
 
+Object.prototype.prettyPrint = function(indent, skipFunc, level){
 
-Function.prototype.prettyString = function(indent){
+  var indentChar = '  ';
 
-  if(indent === undefined) 
-    indent = -1;
-  
-  indent ++;
-  var indents = '\t'.repeat(indent);
-  
+  if(_.isUndefined(level))
+    level = 10;  
+  if(level === -1) return '<Call overflow>';
+
+  if(_.isUndefined(indent)) 
+    indent = 0;
+
+
+  var indents = indentChar.repeat(indent);
+  var childIndents = indentChar.repeat(indent + 1);
+
   var text = '';  
   if(Array.isArray(this)){
-    text += indents + '[\n';
+    if(_.isEmpty(this)) return '[]';
 
-    for(var i in this){
+    text += '\n' + indents + '[';
+
+    for(var i=0; i < this.length; i++){
       var o  = this[i];
-      text += indents + this.prettyPrint(o,indent) ;
+      var t = _.isUndefined(o)  ? 'undefined' : o.prettyPrint(indent + 1,skipFunc, level - 1);
+      text += childIndents + t + ',\n';
     }
-    return text + indents + '],\n';          
+    return text + indents + ']';          
   }
   else {
-    text += indents + '{';
+
+    if(_.isEmpty(this)) return '{}';
+    text += '\n' + indents + '{' + this.getClass() + '\n';    
+    //var indents = '\t'.repeat(indent);  
+
     for(var k in this){
       var v  = this[k];
-
-      if(this.hasOwnProperty(k)){ 
-
+      if(this.hasOwnProperty(k)){
         switch(typeof v){
           case 'string' : 
-          text += (k + ":'" + v + "',");
-          break;
-          case 'object' : v = this.prettyPrint(v,indent);
+            text += childIndents + (k + ":'" + v + "',\n");
+            break;
+          case 'object' : 
+            var skip = _.isFunction(skipFunc) && skipFunc.call(undefined,k,v);
+            v =  skip ? '<skip>' : v.prettyPrint(indent + 1,skipFunc, level - 1);
+            text += childIndents + k + ':' + v + ',\n';          
+            break;
           case 'boolean' :
           case 'number' :
-          text += k + ':' + v + ',';
-          break;
+            text +=  childIndents + k + ':' + v + ',\n';
+            break;
           case 'undefined':
         }
       }
     }
-    return text + '}\n';          
+    return  text + indents + '}';          
   }
 };
 
-Function.prototype.copy = function(obj){
+Object.prototype.getClass = function(){
+  var text = this.constructor;
+  if(_.isUndefined(text)){
+    return '';
+  }
+  text = text.toString();
+  var i = text.indexOf(' ');
+  var j = text.indexOf('(');
+  return ' //' + text.substring(i + 1,j);
+
+
+};
+
+/*
+Object.prototype.copy = function(obj){
   for(var k in obj){
     if(obj.dataObj.hasOwnProperty(k)){
       this.k = obj.k;
     }
   }
-};
+};*/
