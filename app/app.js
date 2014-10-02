@@ -38,6 +38,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
         var tables = dTable.currRefTables();
         for(var i in tables){
           var table = tables[i];
+          if(!_.isString(table)) continue;
           var refData = DataFactory.query({table:table});
           promises.push(refData.$promise.then(function(data){
             dTable.addData(table,refData);
@@ -47,13 +48,24 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
         //all promises resolved, time to massage current table data
         $q.all(promises).then(function(){
           //dTable.linkHeaders(newVal);
-          $scope.dTable = dTable;
+          //$scope.dTable = dTable;
+          //var columns = dTable.currHeaderTree().traverseEdge();
+          refresh();
         });
       });      
   });  
 
-  $scope.translate = function (value,header){
-    return dTable.translate(header,value)
+  var refresh = function(){
+    var cols = dTable.currHeaderTree().traverseEdges();
+    var headers = dTable.getStrippedTableHeaders();
+    var data = dTable.currData();
+    $scope.headers = headers;
+    $scope.cols = cols;
+    $scope.data =  data;
+  };
+
+  $scope.translate = function (edge,rowObj){
+    return dTable.translate(edge,rowObj);
   };
 
   $scope.sort = function(colName){
@@ -76,8 +88,10 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
     dTable.currData()[obj['id']] = undefined;
   };
 
-  $scope.hide = function(header,enable){
-    header.hide = enable;
+  $scope.hide = function(id,enable){
+    //header.hide = enable;
+    dTable.hideHeader(id,enable);
+    refresh();
   }
 
   $scope.clone = function(){      

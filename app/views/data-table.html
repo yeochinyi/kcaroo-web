@@ -31,15 +31,22 @@
 <div class="row">
   <table id='data-table' class='table table-bordered table-striped table-hover table-condensed'>
     <thead>
-      <tr>
-        <th class="text-capitalize"  ng:repeat='k in dTable.currHeaders()' ng-class='{rotate_cell:k.hide}'><span ng-class='{rotate:k.hide}' ng-click='sort(k.id)'><span class='glyphicon' ng-class='{"glyphicon-zoom-out": !k.hide, "glyphicon-zoom-in": k.hide}' ng-click='hide(k,!k.hide)'><span>{{ k.getDisplay()  | cleanCol}}</span></span></span> </th>
+      <tr ng:repeat='breadth in headers'><!--th>{{breadth}}</th-->
+        <th ng:repeat='k in breadth' rowspan='{{k.childnum === 0 ? breadth.length + 1 - k.level: 1 }}' colspan='{{k.childnum === 0 ? 1 : k.childnum}}' class='text-capitalize' ng-class='{rotate_cell:k.obj.hide}'>
+          <span ng-class='{rotate:k.obj.hide}' ng-click='sort(k.obj.id)'>
+            <span class='glyphicon' ng-class='{"glyphicon-zoom-out": !k.obj.hide, "glyphicon-zoom-in": k.obj.hide}' ng-click='hide(k.obj.id,!k.obj.hide)'>
+              <span>{{ k.obj.dheader.named  | cleanCol}}
+              </span>
+            </span>
+          </span> 
+        </th>
       </tr>
     </thead>
     <tbody>
         <!--tr class='animate-repeat' ng-class='rowClass(v)' ng:repeat='v in dTable.currData() | filter:filterRefValue | orderBy:orderProp track by v.id'>
           <td ng:repeat='k in dTable.currHeaders()' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:translate }}</td-->
-        <tr class='animate-repeat' ng-class='rowClass(v)' ng:repeat='v in dTable.currData() | filter:query | orderBy:orderProp track by v.id'>
-          <td ng:repeat='k in dTable.currHeaders()' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:translate }}</td>
+        <tr class='animate-repeat' ng:repeat='v in data'>
+          <td ng:repeat='k in cols' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ translate(k,v) }}</td>
         </tr>
     </tbody>  
   </table>

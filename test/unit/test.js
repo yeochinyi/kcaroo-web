@@ -73,7 +73,7 @@ describe('DTable',function(){
     this.addMatchers({
       equals: function(expected) {
         this.message = function() {
-          return 'Expected ->\n' +  expected.prettyPrint() + '\n VS \nActual->\n' + this.actual.prettyPrint();
+          return 'Expected ->\n' +  _(expected).prettyPrint() + '\n VS \nActual->\n' + _(this.actual).prettyPrint();
         }
         return angular.equals(this.actual, expected);        
       }
@@ -90,6 +90,12 @@ describe('DTable',function(){
         'name': 't11',
         'table2_refid': 2,
         'name1-table2_refid': 1,
+      },
+      {
+        'id': 2,
+        'name': 't12',
+        'table2_refid': 1,
+        'name1-table2_refid': 2,
       },
 
     ]);
@@ -127,13 +133,51 @@ describe('DTable',function(){
 
     d.hideHeader('table2_refid',false);
 
-    console.log('headerTree\n----------------\n' + d.currHeaderTree().prettyPrint(0,skipFn));
+    //console.log('headerTree\n----------------\n' + d.currHeaderTree().prettyPrint(0,skipFn));
 
-    //var headerOpsTB = d.currHeaderTree().traverseBreadth();
-    //console.log('headerOpsTB\n----------------\n' + headerOpsTB.prettyPrint(0,skipFn));
+    //console.log('data\n------\n' + d.currData().prettyPrint(0,skipFn));
 
-    //var headerOpsEdge = d.currHeaderTree().traverseEdges();  
+    d.hideHeader('name1-table2_refid',false);
+
+    //console.log('headerTree\n----------------\n' + d.currHeaderTree().prettyPrint(0,skipFn));
+
+    var data = d.currData();
+
+    //console.log('data\n------\n' + data.prettyPrint(0,skipFn));
+
+    
+    var headerOpsTB = d.currHeaderTree().traverseBreadth();
+    console.log('headerOpsTB\n----------------\n' + _(headerOpsTB).prettyPrint(0,skipFn));
+    
+    var headerOpsEdge = d.currHeaderTree().traverseEdges();  
     //console.log('headerOpsEdge\n----------------\n' + headerOpsEdge.prettyPrint(0,skipFn));
+
+    //console.log('d.currHeaderTree\n----------------\n' + d.currHeaderTree().prettyPrint(0,skipFn));
+
+    //console.log(_(data).keys());
+
+    console.log('headerOpsTB.length =' + headerOpsTB.length);
+
+
+    var output = [];
+
+    _.each(data,function(v,k){
+      if(!_.isFunction(v)){
+
+        var inner = [];
+        output.push(inner);
+        //console.log('1:' + v.prettyPrint(0,skipFn));
+        _.each(headerOpsEdge,function(e){
+          //console.log('2 :' + e.prettyPrint(0,skipFn));      
+          var text =  d.translate(e,v);             
+          //console.log('TEST->' + text);         
+          inner.push(text);
+        });
+      }      
+    });
+
+    console.log(_(output).prettyPrint());
+
   });
 });
 

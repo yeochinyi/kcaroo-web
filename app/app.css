@@ -90,9 +90,10 @@ th, td {
   position:relative;
   top:20px;
 }
+
 .rotate_cell
 {
- height:200px;
+ height:150px;
  width: 10px;
  vertical-align:bottom;
 }

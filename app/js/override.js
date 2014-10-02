@@ -23,12 +23,37 @@ String.prototype.repeat = function(num){
   return t;
 };
 
+/*
 Object.prototype.prettyPrint = function(indent, skipFunc, level){
+
+  var checkType = function(v,childIndents,skipFunc,k){
+
+    k = _.isUndefined(k) ? '' : k + ':';
+
+    switch(typeof v){
+      case 'string' : 
+        return childIndents + (k + "'" + v + "',\n");
+        break;
+      case 'object' : 
+        var skip = _.isFunction(skipFunc) && skipFunc(k,v);
+        v =  skip ? '<skip>' : v.prettyPrint(indent + 1,skipFunc, level - 1);
+        return childIndents + k + v + ',\n';          
+        break;
+      case 'boolean' :
+      case 'number' :
+        return  childIndents + k + v + ',\n';
+        break;
+      case 'undefined':
+        return childIndents + '<undefined>,\n';
+    }
+    return '';    
+
+  }
 
   var indentChar = '  ';
 
   if(_.isUndefined(level))
-    level = 10;  
+    level = 5;  
   if(level === -1) return '<Call overflow>';
 
   if(_.isUndefined(indent)) 
@@ -42,46 +67,31 @@ Object.prototype.prettyPrint = function(indent, skipFunc, level){
   if(Array.isArray(this)){
     if(_.isEmpty(this)) return '[]';
 
-    text += '\n' + indents + '[';
+    text += '\n' + indents + '[\n';
 
     for(var i=0; i < this.length; i++){
       var o  = this[i];
-      var t = _.isUndefined(o)  ? 'undefined' : o.prettyPrint(indent + 1,skipFunc, level - 1);
-      text += childIndents + t + ',\n';
+      text += checkType(o,childIndents,skipFunc);
     }
     return text + indents + ']';          
   }
   else {
 
     if(_.isEmpty(this)) return '{}';
-    text += '\n' + indents + '{' + this.getClass() + '\n';    
+    text += '\n' + indents + '{' + this.getClassText(' //') + '\n';    
     //var indents = '\t'.repeat(indent);  
 
     for(var k in this){
       var v  = this[k];
       if(this.hasOwnProperty(k)){
-        switch(typeof v){
-          case 'string' : 
-            text += childIndents + (k + ":'" + v + "',\n");
-            break;
-          case 'object' : 
-            var skip = _.isFunction(skipFunc) && skipFunc.call(undefined,k,v);
-            v =  skip ? '<skip>' : v.prettyPrint(indent + 1,skipFunc, level - 1);
-            text += childIndents + k + ':' + v + ',\n';          
-            break;
-          case 'boolean' :
-          case 'number' :
-            text +=  childIndents + k + ':' + v + ',\n';
-            break;
-          case 'undefined':
-        }
+        text += checkType(v,childIndents,skipFunc,k);
       }
     }
     return  text + indents + '}';          
   }
 };
 
-Object.prototype.getClass = function(){
+Object.prototype.getClassText = function(prefix){
   var text = this.constructor;
   if(_.isUndefined(text)){
     return '';
@@ -89,10 +99,97 @@ Object.prototype.getClass = function(){
   text = text.toString();
   var i = text.indexOf(' ');
   var j = text.indexOf('(');
-  return ' //' + text.substring(i + 1,j);
-
-
+  return prefix + text.substring(i + 1,j);
 };
+*/
+
+_.mixin({
+  clean : function(list,v){
+    return _.reject(list,function(v) { 
+      if(_.isUndefined(v)) return false;
+      if(_.isNull(v)) return false
+      if(_.isFunction(v)) return false;
+      return true;
+    });
+  },
+
+  prettyPrint : function(obj, indent, skipFunc, level){
+
+    var checkType = function(obj, v,childIndents,skipFunc,k){
+
+      k = _.isUndefined(k) ? '' : k + ':';
+
+      switch(typeof v){
+        case 'string' : 
+          return childIndents + (k + "'" + v + "',\n");
+          break;
+        case 'object' : 
+          var skip = _.isFunction(skipFunc) && skipFunc(k,v);
+          v =  skip ? '<skip>' : _.prettyPrint(v, indent + 1,skipFunc, level - 1);
+          return childIndents + k + v + ',\n';          
+          break;
+        case 'boolean' :
+        case 'number' :
+          return  childIndents + k + v + ',\n';
+          break;
+        case 'undefined':
+          return childIndents + '<undefined>,\n';
+      }
+      return '';    
+    }
+
+    var indentChar = '  ';
+
+    if(_.isUndefined(level))
+      level = 5;  
+    if(level === -1) return '<Call overflow>';
+
+    if(_.isUndefined(indent)) 
+      indent = 0;
+
+    var indents = indentChar.repeat(indent);
+    var childIndents = indentChar.repeat(indent + 1);
+
+    var text = '';  
+    if(Array.isArray(obj)){
+      if(_.isEmpty(obj)) return '[]';
+
+      text += '\n' + indents + '[\n';
+
+      for(var i=0; i < obj.length; i++){
+        var o  = obj[i];
+        text += checkType(obj, o,childIndents,skipFunc);
+      }
+      return text + indents + ']';          
+    }
+    else {
+
+      if(_.isEmpty(obj)) return '{}';
+      text += '\n' + indents + '{' + _.getClassText(obj,' //') + '\n';    
+      //var indents = '\t'.repeat(indent);  
+
+      for(var k in obj){
+        var v  = obj[k];
+        if(obj.hasOwnProperty(k)){
+          text += checkType(obj, v,childIndents,skipFunc,k);
+        }
+      }
+      return  text + indents + '}';          
+    }
+  },
+
+  getClassText : function(obj, prefix){
+    var text = obj.constructor;
+    if(_.isUndefined(text)){
+      return '';
+    }
+    text = text.toString();
+    var i = text.indexOf(' ');
+    var j = text.indexOf('(');
+    return prefix + text.substring(i + 1,j);
+  },  
+});
+
 
 /*
 Object.prototype.copy = function(obj){
