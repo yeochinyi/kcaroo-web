@@ -32,7 +32,7 @@
   <table id='data-table' class='table table-bordered table-striped table-hover table-condensed'>
     <thead>
       <tr ng:repeat='breadth in headers'><!--th>{{breadth}}</th-->
-        <th ng:repeat='k in breadth' rowspan='{{k.childnum === 0 ? breadth.length + 1 - k.level: 1 }}' colspan='{{k.childnum === 0 ? 1 : k.childnum}}' class='text-capitalize' ng-class='{rotate_cell:k.obj.hide}'>
+        <th ng:repeat='k in breadth' rowspan='{{k.childnum === 0 ? (headers.length + 1 - k.level): 1 }}' colspan='{{k.childnum === 0 ? 1 : k.childnum}}' class='text-capitalize' ng-class='{rotate_cell:k.obj.hide}'>
           <span ng-class='{rotate:k.obj.hide}' ng-click='sort(k.obj.id)'>
             <span class='glyphicon' ng-class='{"glyphicon-zoom-out": !k.obj.hide, "glyphicon-zoom-in": k.obj.hide}' ng-click='hide(k.obj.id,!k.obj.hide)'>
               <span>{{ k.obj.dheader.named  | cleanCol}}
