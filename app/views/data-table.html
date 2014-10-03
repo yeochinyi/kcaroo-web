@@ -20,8 +20,8 @@
   <div class="col-sm-4">
     <div class='form-group'>
       <label class=' control-label'>Sort</label>     
-      <select class='form-control' ng-model="orderProp">
-        <option ng:repeat="k in dTable.currHeaders()" value="{{k.named}}">{{k.named | cleanCol}}</option>
+      <select class='form-control' ng-model="orderBy">
+        <option ng:repeat="k in cols" value="{{k.obj.id}}">{{k.obj.id}}</option>
       </select>
     </div>
   </div>
@@ -31,53 +31,21 @@
 <div class="row">
   <table id='data-table' class='table table-bordered table-striped table-hover table-condensed'>
     <thead>
-      <tr ng:repeat='breadth in headers'><!--th>{{breadth}}</th-->
-        <th ng:repeat='k in breadth' rowspan='{{k.childnum === 0 ? (headers.length + 1 - k.level): 1 }}' colspan='{{k.childnum === 0 ? 1 : k.childnum}}' class='text-capitalize' ng-class='{rotate_cell:k.obj.hide}'>
+      <tr ng:repeat='breadth in headers' class='repeated-item'>
+        <th ng:repeat='k in breadth' class='repeated-item' rowspan='{{k.childnum === 0 ? (headers.length + 1 - k.level): 1 }}' colspan='{{k.childnum === 0 ? 1 : k.childnum}}' ng-class='{rotate_cell:k.obj.hide}'>
           <span ng-class='{rotate:k.obj.hide}' ng-click='sort(k.obj.id)'>
-            <span class='glyphicon' ng-class='{"glyphicon-zoom-out": !k.obj.hide, "glyphicon-zoom-in": k.obj.hide}' ng-click='hide(k.obj.id,!k.obj.hide)'>
-              <span>{{ k.obj.dheader.named  | cleanCol}}
-              </span>
-            </span>
-          </span> 
+            <span class='glyphicon' ng-class='{"glyphicon-zoom-out": !k.obj.hide, "glyphicon-zoom-in": k.obj.hide}' ng-click='hide(k.obj.id,!k.obj.hide)'></span>
+            <span class='text-capitalize'>{{k.obj.dheader.named}}</span>            
+          </span>
         </th>
       </tr>
     </thead>
     <tbody>
         <!--tr class='animate-repeat' ng-class='rowClass(v)' ng:repeat='v in dTable.currData() | filter:filterRefValue | orderBy:orderProp track by v.id'>
           <td ng:repeat='k in dTable.currHeaders()' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:translate }}</td-->
-        <tr class='animate-repeat' ng:repeat='v in data'>
-          <td ng:repeat='k in cols' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ translate(k,v) }}</td>
+        <tr class='repeated-item' ng:repeat='v in data | custom:v:filterRef track by v.id'>
+          <td ng:repeat='k in cols' class='repeated-item' ng-dblclick='openModal(v)'>{{translate(k,v)}}</td>
         </tr>
     </tbody>  
   </table>
 </div>
-
-<script type="text/ng-template" id="editModal">
-  <div class="modal-header">
-      <h3 class="modal-title">Edit Form</h3>
-  </div>
-  <div class="modal-body">
-    <!-- div class="row well" -->
-      <form class='form-horizontal' role='form'>
-        <div class='form-group' ng-repeat='k in headers'>
-            <label for='{{k.name}}' class='col-sm-3 control-label text-capitalize'>{{k.name | cleanCol}}</label>          
-            <div class='col-sm-9'>
-              <input class='form-control' ng-if='k.name.indexOf("_id") == -1' type='text' placeholder='Enter Text' ng-model='formObj[k.name]' ng-disabled='k.name == "id"'>
-              <div ng-if='k.name.indexOf("_id") != -1'>
-                <select class='form-control' ng-model='formObj[k.name]'>
-                  <option ng:repeat="v in mapOfMap[k.name]" value="{{v.id}}">{{v.name}}</option>
-                </select>
-              </div>
-            </div>
-        </div>
-        <div class='col-sm-2'></div>
-        <div class='col-sm-10 btn-group btn-group-lg'>
-          <button type="button" ng-click="clone()" class="btn btn-primary">Clone</button>
-          <button type="button" ng-click="update()" class="btn btn-warning">Update</button>
-          <button type="button" ng-click="delete()" class="btn btn-danger">Delete</button>
-          <button type="button" ng-click="clear()" class="btn btn-default">Clear</button>
-        </div>
-      </form>
-    <!-- /div -- >
-  </div>
-</script>

@@ -21,6 +21,15 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
 
   var dTable = new DTable();
 
+  var refresh = function(){
+    var cols = dTable.currHeaderTree().traverseEdges();
+    var headers = dTable.getStrippedTableHeaders();
+    var data = dTable.currData();
+    $scope.headers = headers;
+    $scope.cols = cols;
+    $scope.data =  _.values(data); //strip out arrays
+  };
+
   $scope.$watch('currentTable',function(newVal,oldVal){
 
     if(newVal == undefined) return;
@@ -47,77 +56,14 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
 
         //all promises resolved, time to massage current table data
         $q.all(promises).then(function(){
-          //dTable.linkHeaders(newVal);
-          //$scope.dTable = dTable;
-          //var columns = dTable.currHeaderTree().traverseEdge();
+          $scope.mapOfData = dTable.mapOfData;
           refresh();
         });
       });      
   });  
 
-  var refresh = function(){
-    var cols = dTable.currHeaderTree().traverseEdges();
-    var headers = dTable.getStrippedTableHeaders();
-    var data = dTable.currData();
-    $scope.headers = headers;
-    $scope.cols = cols;
-    $scope.data =  data;
-  };
-
   $scope.translate = function (edge,rowObj){
     return dTable.translate(edge,rowObj);
-  };
-
-  $scope.sort = function(colName){
-    $scope.orderProp = colName;
-  };
-
-  $scope.select = function(id,field){      
-    $scope.formObj = angular.copy(currentMap()[id]);
-  };
-
-  function add(obj){
-    dTable.currData()[obj['id']] = obj;
-  };
-
-  function update(obj){
-    dTable.currData()[obj['id']] = obj;
-  };
-
-  function remove(obj){
-    dTable.currData()[obj['id']] = undefined;
-  };
-
-  $scope.hide = function(id,enable){
-    //header.hide = enable;
-    dTable.hideHeader(id,enable);
-    refresh();
-  }
-
-  $scope.clone = function(){      
-    var formObj = $scope.formObj;
-    formObj['id'] = dTable.getLastId() + 1;
-    add(formObj);
-    modalInstance.close();
-  };
-
-  $scope.update = function(){      
-    var formObj = $scope.formObj;
-    update(formObj);
-    modalInstance.close();
-  };
-
-  $scope.delete = function(){ 
-    //remove(formObj);
-    //soft delete
-    var formObj = $scope.formObj;
-    formObj['$ops'] = 'delete';
-    update(formObj);
-    modalInstance.close();
-  };
-
-  $scope.clear = function(){      
-    $scope.formObj = {};
   };
 
   $scope.rowClass = function(row){
@@ -126,19 +72,62 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
     return '';
   };
 
-  $scope.filterRefValue = function(obj){
+  $scope.filterRef = function(objArray){
     var query = $scope.query;
-    if(!query) return true;
-    return dTable.rowContains(obj,query);
+    var retArray;
+    if(!query){
+      retArray = objArray;
+    }
+    else{
+      retArray = [];
+      _.each(objArray,function(obj){
+        if(_.propertyContains(obj,query)){
+          retArray.push(obj);
+        }        
+      });      
+    }
+
+    //sorting
+    var orderBy = $scope.orderBy;
+    if(orderBy){
+      var splitted = orderBy.split(".");
+      retArray = retArray.sort(function(a,b){
+        for(var i=0; i<splitted.length; i++){
+          var s = splitted[i];
+          if(i !== splitted.length - 1) s +=  '_refid';
+          a = a[s];
+          b = b[s];
+        }
+        return a > b;
+      });
+    }
+    
+    return retArray;
   };
+
+  $scope.hide = function(id,enable){
+    //header.hide = enable;
+    dTable.hideHeader(id,enable);
+    refresh();
+  };
+
+  $scope.sort = function(colName){
+    $scope.orderProp = colName;
+  };
+
+  //$scope.select = function(id,field){      
+  //  $scope.formObj = angular.copy(currentMap()[id]);
+  //};
+
 
   var modalInstance;
 
-  $scope.openModal = function(id,field){
-    $scope.formObj = angular.copy(currentMap()[id]);
+  $scope.openModal = function(obj){
+    $scope.formObj = angular.copy(obj);
     modalInstance = $modal.open({
-      templateUrl : 'editModal',
-      //controller : 'DataTableCtrl',
+      //templateUrl : 'editModal',
+      templateUrl : 'views/edit-form.html',
+      controller : 'FormCtrl',
       size : 'lg',        
       scope : $scope,
     });
@@ -149,6 +138,53 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
     event.preventDefault();
   });
   */
+}]).
+controller('FormCtrl', ['$scope', function($scope){
+
+  function add(obj){
+    //dTable.currData()[obj['id']] = obj;
+  };
+
+  function update(obj){
+    //dTable.currData()[obj['id']] = obj;
+  };
+
+  function remove(obj){
+    //dTable.currData()[obj['id']] = undefined;
+  };
+
+  $scope.clone = function(){      
+    /*
+    var formObj = $scope.formObj;
+    formObj['id'] = dTable.getLastId() + 1;
+    add(formObj);
+    modalInstance.close();
+    */
+  };
+
+  $scope.update = function(){      
+    /*
+    var formObj = $scope.formObj;
+    update(formObj);
+    modalInstance.close();
+    */
+  };
+
+  $scope.delete = function(){ 
+    //remove(formObj);
+    //soft delete
+    /*
+    var formObj = $scope.formObj;
+    formObj['$ops'] = 'delete';
+    update(formObj);
+    modalInstance.close();
+    */
+  };
+
+  $scope.clear = function(){      
+    $scope.formObj = {};
+  };
+
 }]).
 controller('TestCtrl', ['$scope','$http','DataFactory', 'SyncDataFactory','$q','$interval', function($scope,$http,DataFactory,SyncDataFactory,$q,$interval){
 
@@ -177,9 +213,10 @@ filter('cleanCol',function(){
     return input;
   }
 }).
-filter('convert',function(){ // NG ie. : {{ v[k.id] | convert:k:translate }}
-  return function(header,value,fn){
-    return fn(header,value);      
+filter('custom',function(){ 
+  return function(a,b,fn){
+    //console.log('a=' + _(a).prettyPrint() +',b=' + b +',fn=' + fn);
+    return fn(a);
   }
 }).
 config(['$routeProvider', function($routeProvider) {

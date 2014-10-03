@@ -2,6 +2,16 @@
 
 th, td {
   text-align: center;
+  //font-size: 14px;
+  white-space: nowrap;
+}
+
+tr {
+  //font-size:0 ;
+}
+
+th > span {
+  display:inline-block; <!-- make rotate work on inline -->  
 }
 
 .menu {
@@ -47,31 +57,65 @@ th, td {
   text-decoration: line-through;
 }
 
-.animate-repeat {
-  line-height:40px;
-  list-style:none;
-  box-sizing:border-box;
+/*
+ We're using CSS transitions for when
+ the enter and move events are triggered
+ for the element that has the .repeated-item
+ class
+*/
+.repeated-item.ng-enter, .repeated-item.ng-move {
+ -webkit-transition:0.5s linear all;
+ -moz-transition:0.5s linear all;
+ -o-transition:0.5s linear all;
+ transition:0.5s linear all;
+ opacity:0;
 }
 
-.animate-repeat.ng-move,
-.animate-repeat.ng-enter,
-.animate-repeat.ng-leave {
-  -webkit-transition:all linear 0.5s;
-  transition:all linear 0.5s;
+/*
+The ng-enter-active and ng-move-active
+are where the transition destination properties
+are set so that the animation knows what to
+animate.
+*/
+.repeated-item.ng-enter.ng-enter-active,
+.repeated-item.ng-move.ng-move-active {
+ opacity:1;
 }
 
-.animate-repeat.ng-leave.ng-leave-active,
-.animate-repeat.ng-move,
-.animate-repeat.ng-enter {
-  opacity:0;
-  max-height:0;
+/*
+ We're using CSS keyframe animations for when
+ the leave event is triggered for the element
+ that has the .repeated-item class
+*/
+.repeated-item.ng-leave {
+ -webkit-animation:0.5s my_animation;
+ -moz-animation:0.5s my_animation;
+ -o-animation:0.5s my_animation;
+ animation:0.5s my_animation;
 }
 
-.animate-repeat.ng-leave,
-.animate-repeat.ng-move.ng-move-active,
-.animate-repeat.ng-enter.ng-enter-active {
-  opacity:1;
-  max-height:40px;
+@keyframes my_animation {
+ from { opacity:1; }
+ to { opacity:0; }
+}
+
+/*
+ Unfortunately each browser vendor requires
+ its own definition of keyframe animation code...
+*/
+@-webkit-keyframes my_animation {
+ from { opacity:1; }
+ to { opacity:0; }
+}
+
+@-moz-keyframes my_animation {
+ from { opacity:1; }
+ to { opacity:0; }
+}
+
+@-o-keyframes my_animation {
+ from { opacity:1; }
+ to { opacity:0; }
 }
 
 .glyphicon-remove {
@@ -80,20 +124,51 @@ th, td {
 
 
 .rotate {
-  display:block;
-  -moz-transform:rotate(-90deg); 
-  -moz-transform-origin: top left;
-  -webkit-transform: rotate(-90deg);
-  -webkit-transform-origin: top left;
-  -o-transform: rotate(-90deg);
-  -o-transform-origin:  top left;
+  //display:inline-block; <!-- make rotate work on inline -->  
+  //-moz-transform:rotate(-90deg); 
+  //-moz-transform-origin: top left;
+  //-webkit-transform: rotate(-90deg);
+  //-webkit-transform-origin: top left;
+  -webkit-animation: rotatefwd 1s;
+  -webkit-animation-fill-mode: forwards;
+  //-o-transform: rotate(-90deg);
+  //-o-transform-origin:  top left;
   position:relative;
-  top:20px;
+  //top:20px;
 }
 
 .rotate_cell
 {
- height:150px;
- width: 10px;
- vertical-align:bottom;
+ height:120px;
+ width: 1px;
+ overflow: hidden;
+ //vertical-align:bottom;
 }
+
+
+@-webkit-keyframes rotatefwd {
+    100% {
+      -webkit-transform: rotate(-90deg);
+      -webkit-transform-origin: top left;
+    }
+}
+
+.rotateback {
+  -webkit-animation: rotateback 1s;
+  -webkit-animation-fill-mode: forwards;
+  position:relative;
+  //top:20px;
+}
+
+@-webkit-keyframes rotateback {
+    100% {
+      -webkit-transform: rotate(90deg);
+      -webkit-transform-origin: top left;
+    }
+}
+
+
+/*
+@keyframes spin {
+    50% {transform: rotate(-90deg);}
+}*/

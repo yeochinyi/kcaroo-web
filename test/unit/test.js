@@ -156,7 +156,7 @@ describe('DTable',function(){
 
     //console.log(_(data).keys());
 
-    console.log('headerOpsTB.length =' + headerOpsTB.length);
+    //console.log('headerOpsTB.length =' + headerOpsTB.length);
 
 
     var output = [];
@@ -176,7 +176,27 @@ describe('DTable',function(){
       }      
     });
 
-    console.log(_(output).prettyPrint());
+    //console.log(_(output).prettyPrint());
+
+    expect(output).equals([
+      [
+        1,
+        't11',
+        1,
+        't21',
+        1,
+        't21',
+      ],
+
+      [
+        2,
+        't12',
+        2,
+        't22',
+        2,
+        't22',
+      ],
+    ]);
 
   });
 });
