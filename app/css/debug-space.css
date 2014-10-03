@@ -1,0 +1,19 @@
+tr {
+    background-color: red !important; 
+}
+
+th {
+  background-color: hotpink !important;
+}
+
+td {
+  background-color: burlywood !important; 
+}
+
+div {
+  background-color: deepskyblue !important;
+}
+
+span {
+  background-color: silver !important;
+}
