@@ -10,60 +10,67 @@ angular.module('myApp', [
   ]).
 factory('DataFactory',['$resource', function($resource) {
   var p = $resource('sample/:table.json',{},{
-    query: {method:'GET',params:{table:'table'},isArray:true}
+    query: {method:'GET',params:{table:'table'},isArray:true},
   });
   return p;
 }]).
-controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',function($scope,DataFactory,$timeout,$q,$modal){  
+factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
+  var dTable = new DTable();
+
+  DTable.prototype.initData = function(val,callbackFn){
+    dTable.currTable = val;
+    var data = DataFactory.query({table:val});
+    data.$promise.then(function(data){
+      //Get Data
+      dTable.addData(val,data);
+
+      //wait for combined promises
+      var promises = [];
+      //Get Headers & all necessary static data
+
+      var tables = dTable.currRefTables();
+      for(var i in tables){
+        var table = tables[i];
+        if(!_.isString(table)) continue;
+        var refData = DataFactory.query({table:table});
+        promises.push(refData.$promise.then(function(data){
+          dTable.addData(table,refData);
+        }));          
+      }
+
+      //all promises resolved, time to massage current table data
+      $q.all(promises).then(function(){
+        callbackFn();
+      });
+    });      
+  };
+
+  return dTable;
+}]).
+controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataTable,$modal){  
 
   $scope.tables = ['dynamic_table_2','static_table_1'];
   $scope.currentTable = 'dynamic_table_2';
 
-  var dTable = new DTable();
-
-  var refresh = function(){
-    var cols = dTable.currHeaderTree().traverseEdges();
-    var headers = dTable.getStrippedTableHeaders();
-    var data = dTable.currData();
+  function refresh(){
+    var cols = DataTable.currHeaderTree().traverseEdges();
+    var headers = DataTable.getStrippedTableHeaders();
+    var data = DataTable.currData();
     $scope.headers = headers;
     $scope.cols = cols;
     $scope.data =  _.values(data); //strip out arrays
+    $scope.mapOfData = DataTable.mapOfData;
   };
 
+  //watching changes in $scope.currentTable
   $scope.$watch('currentTable',function(newVal,oldVal){
 
-    if(newVal == undefined) return;
-    dTable.currTable = newVal;
-
-    var data = DataFactory.query({table:newVal});
-    data.$promise.then(function(data){
-        //Get Data
-        dTable.addData(newVal,data);
-
-        //wait for combined promises
-        var promises = [];
-        //Get Headers & all necessary static data
-
-        var tables = dTable.currRefTables();
-        for(var i in tables){
-          var table = tables[i];
-          if(!_.isString(table)) continue;
-          var refData = DataFactory.query({table:table});
-          promises.push(refData.$promise.then(function(data){
-            dTable.addData(table,refData);
-          }));          
-        }
-
-        //all promises resolved, time to massage current table data
-        $q.all(promises).then(function(){
-          $scope.mapOfData = dTable.mapOfData;
-          refresh();
-        });
-      });      
+    if(newVal == undefined) return;    
+    DataTable.initData(newVal,refresh);
   });  
 
   $scope.translate = function (edge,rowObj){
-    return dTable.translate(edge,rowObj);
+    return DataTable.translate(edge,rowObj);
   };
 
   $scope.rowClass = function(row){
@@ -107,7 +114,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
 
   $scope.hide = function(id,enable){
     //header.hide = enable;
-    dTable.hideHeader(id,enable);
+    DataTable.hideHeader(id,enable);
     refresh();
   };
 
@@ -119,7 +126,6 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
   //  $scope.formObj = angular.copy(currentMap()[id]);
   //};
 
-
   var modalInstance;
 
   $scope.openModal = function(obj){
@@ -127,7 +133,7 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
     modalInstance = $modal.open({
       //templateUrl : 'editModal',
       templateUrl : 'views/edit-form.html',
-      controller : 'FormCtrl',
+      //controller : 'FormCtrl',
       size : 'lg',        
       scope : $scope,
     });
@@ -141,25 +147,12 @@ controller('DataTableCtrl', ['$scope','DataFactory','$timeout','$q','$modal',fun
 }]).
 controller('FormCtrl', ['$scope', function($scope){
 
-  function add(obj){
-    //dTable.currData()[obj['id']] = obj;
-  };
 
-  function update(obj){
-    //dTable.currData()[obj['id']] = obj;
-  };
 
-  function remove(obj){
-    //dTable.currData()[obj['id']] = undefined;
-  };
-
-  $scope.clone = function(){      
-    /*
+  $scope.clone = function(){          
     var formObj = $scope.formObj;
-    formObj['id'] = dTable.getLastId() + 1;
     add(formObj);
-    modalInstance.close();
-    */
+    modalInstance.close();  
   };
 
   $scope.update = function(){      

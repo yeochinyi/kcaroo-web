@@ -213,4 +213,17 @@ DTable.prototype = {
       }
     }
   },
+
+  add: function(obj){
+    dTable.currData()[obj['id']] = obj;
+  },
+
+  update: function(obj){
+    dTable.currData()[obj['id']] = obj;
+  },
+
+  remove: function(obj){
+    dTable.currData()[obj['id']] = undefined;
+  },
+  
 };
