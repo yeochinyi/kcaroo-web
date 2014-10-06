@@ -58,11 +58,12 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
     var data = DataTable.currData();
     $scope.headers = headers;
     $scope.cols = cols;
-    $scope.data =  _.values(data); //strip out arrays
+    //$scope.data =  _.values(data); //strip out arrays
+    $scope.data =  data; //strip out arrays
     $scope.mapOfData = DataTable.mapOfData;
   };
 
-  //watching changes in $scope.currentTable
+  //watching changes in $scope.currentTable in js
   $scope.$watch('currentTable',function(newVal,oldVal){
 
     if(newVal == undefined) return;    
@@ -126,14 +127,23 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
   //  $scope.formObj = angular.copy(currentMap()[id]);
   //};
 
-  var modalInstance;
+  //var modalInstance;
 
   $scope.openModal = function(obj){
-    $scope.formObj = angular.copy(obj);
-    modalInstance = $modal.open({
+    //var clone = angular.copy(obj);
+    var cloneObj = _.clone(obj);
+
+    _.each(cloneObj,function(v,k){ //reduce all refid back to {} as don't want to change obj inside
+      if(_.isObject(v)){
+        cloneObj[k] = {id:v.id};
+      } 
+    });
+
+    $scope.formObj = cloneObj;
+    $scope.modalInstance = $modal.open({
       //templateUrl : 'editModal',
       templateUrl : 'views/edit-form.html',
-      //controller : 'FormCtrl',
+      controller : 'FormCtrl',
       size : 'lg',        
       scope : $scope,
     });
@@ -145,33 +155,27 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
   });
   */
 }]).
-controller('FormCtrl', ['$scope', function($scope){
-
-
+controller('FormCtrl', ['$scope','DataTable', function($scope,DataTable){
 
   $scope.clone = function(){          
     var formObj = $scope.formObj;
-    add(formObj);
-    modalInstance.close();  
+    DataTable.add(formObj);
+    $scope.modalInstance.close();  
   };
 
-  $scope.update = function(){      
-    /*
+  $scope.update = function(){          
     var formObj = $scope.formObj;
-    update(formObj);
-    modalInstance.close();
-    */
+    DataTable.update(formObj);
+    $scope.modalInstance.close();
   };
 
   $scope.delete = function(){ 
     //remove(formObj);
     //soft delete
-    /*
     var formObj = $scope.formObj;
     formObj['$ops'] = 'delete';
-    update(formObj);
-    modalInstance.close();
-    */
+    DataTable.update(formObj);
+    $scope.modalInstance.close();
   };
 
   $scope.clear = function(){      

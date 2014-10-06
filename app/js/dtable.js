@@ -31,8 +31,6 @@ DTable.prototype = {
     if(edge.obj.hide) return '';
     var key = edge.obj.dheader.id;
 
-    if(!edge.obj.dheader.isRefId()) return rowObj[key];
-
     var parents = [];
     var ptr = edge.parent;
     while(!_.isUndefined(ptr)){
@@ -43,7 +41,7 @@ DTable.prototype = {
     
     for(var i=0; i < parents.length;i++){      
       var parent = parents[0];
-      rowObj = rowObj[parent.obj.dheader.id];      
+      rowObj = rowObj[parent.obj.dheader.id];
     }  
 
     return rowObj[key];
@@ -68,13 +66,19 @@ DTable.prototype = {
   */
   addData : function(table,objArray){
     if(this.hasTable(table)) return;
-    this.createHeaders(table,objArray[0]);
+    var headers = this.createHeaders(table,objArray[0]);
 
     var refMap = {}; // row id vs dataObj
-    //for(var i in objArray) { //loop each row aka obj
-      //var obj = objArray[i]
-    _(objArray).each(function(obj){
-      refMap[obj.id] = obj;
+    _.each(objArray,function(obj){
+
+      _.each(headers,function(header){ //replace all refid col with {id:<v>}
+        if(header.isRefId()){
+          var origRefId = obj[header.id];
+          obj[header.id] = {id:origRefId};
+        }
+      });
+
+      refMap[obj.id] = obj;      
     });
     
                
@@ -87,13 +91,13 @@ DTable.prototype = {
     var headerTree = new Tree();
     this.mapOfHeaderTree[table] = headerTree;
 
-    var colHeaderMap = {};
+    //var colHeaderMap = {};
     var headers = [];
     for(var id in dataObj){ //loop keys
       if(!dataObj.hasOwnProperty(id)) continue; //skip all funny $
       var dheader = new DHeader(id);
       headers.push(dheader);
-      colHeaderMap[id] = dheader;      
+      //colHeaderMap[id] = dheader;      
 
       //var headerOps = new DHeaderOps(dheader,dheader.isRefId());
       var node = {
@@ -104,7 +108,8 @@ DTable.prototype = {
       headerTree.addChildren('',node);
     }
     this.mapOfHeaders[table] = headers;
-    return colHeaderMap;
+    //return colHeaderMap;
+    return headers;
   },
 
   
@@ -207,23 +212,24 @@ DTable.prototype = {
       });
       //transform data
       var refData = this.getData(table);      
-      for(var k in data){        
+      for(var k in data){//looping all data on main table
         var obj = data[k];
-        obj[node.obj.id] = refData[obj.id]; //replace id with []
+        var refId = obj[node.obj.id];
+        obj[node.obj.id] = refData[refId.id]; //replace id with [] of ref table
       }
     }
   },
 
   add: function(obj){
-    dTable.currData()[obj['id']] = obj;
+    this.currData()[obj['id']] = obj;
   },
 
   update: function(obj){
-    dTable.currData()[obj['id']] = obj;
+    this.currData()[obj['id']] = obj;
   },
 
   remove: function(obj){
-    dTable.currData()[obj['id']] = undefined;
+    this.currData()[obj['id']] = undefined;
   },
   
 };
