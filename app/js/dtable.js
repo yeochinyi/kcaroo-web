@@ -1,14 +1,21 @@
 'use strict';
 
+/*
+In obj of each node..:
+{
+  id:<unique id>, i.e concat of all named in dheader
+  hide: boolean //check if obj should be hidden
+  dheader : { //static header info
+    id:<prob col name>
+    type:..
+    ref:...
+    named:..
+  }
+}
+*/
+
 function DTable (){
-    /** Column standards “Using Convention Over Config"
-      ===================================================
-      id                  : each table will have one as primary key
-      <ref table>_refid      : map to another table
-      <named>-<ref table>_refid : 'named' ref table. this maps to a ref table but table header will show '<Colname> <ref table>'s col> on column header
-      *_[date,email,month,num,time,url,week,bool] : show the respective angular widget
-      Everything else will show a typeahead input type='text'
-      **/
+
     // ref tablename vs map value i.e {'static_table_1':{ id:{key1:value1, key2:value2, ...}, ... }...}
     this.mapOfData= {}; 
 
@@ -26,13 +33,12 @@ function DTable (){
 }
 
 DTable.prototype = {
-  translate : function(edge,rowObj){
 
-    if(edge.obj.hide) return '';
-    var key = edge.obj.dheader.id;
-
+  //node is the edge node
+  getRefValue : function(node,rowObj){
+    //create ptrs array from the root to node    
     var parents = [];
-    var ptr = edge.parent;
+    var ptr = node.parent;
     while(!_.isUndefined(ptr)){
       if(ptr.level === 0) break;
       parents.push(ptr);
@@ -41,10 +47,14 @@ DTable.prototype = {
     
     for(var i=0; i < parents.length;i++){      
       var parent = parents[0];
-      rowObj = rowObj[parent.obj.dheader.id];
+      var dataId = rowObj[parent.obj.dheader.id];
+      var data = this.getData(parent.obj.dheader.ref);
+      rowObj = data[dataId];
     }  
 
+    var key = node.obj.dheader.id;
     return rowObj[key];
+    //return rowObj;
   },
 
   hasTable : function(table){
@@ -68,20 +78,10 @@ DTable.prototype = {
     if(this.hasTable(table)) return;
     var headers = this.createHeaders(table,objArray[0]);
 
-    var refMap = {}; // row id vs dataObj
+    var refMap = {}; // create objmap of row id vs dataObj
     _.each(objArray,function(obj){
-
-      _.each(headers,function(header){ //replace all refid col with {id:<v>}
-        if(header.isRefId()){
-          var origRefId = obj[header.id];
-          obj[header.id] = {id:origRefId};
-        }
-      });
-
       refMap[obj.id] = obj;      
-    });
-    
-               
+    });                 
     this.mapOfData[table] = refMap;  
   },
 
@@ -91,15 +91,12 @@ DTable.prototype = {
     var headerTree = new Tree();
     this.mapOfHeaderTree[table] = headerTree;
 
-    //var colHeaderMap = {};
     var headers = [];
     for(var id in dataObj){ //loop keys
       if(!dataObj.hasOwnProperty(id)) continue; //skip all funny $
       var dheader = new DHeader(id);
       headers.push(dheader);
-      //colHeaderMap[id] = dheader;      
 
-      //var headerOps = new DHeaderOps(dheader,dheader.isRefId());
       var node = {
         id : dheader.id,
         dheader : dheader,
@@ -108,10 +105,8 @@ DTable.prototype = {
       headerTree.addChildren('',node);
     }
     this.mapOfHeaders[table] = headers;
-    //return colHeaderMap;
     return headers;
   },
-
   
   currRefTables : function(){
     var r = [];
@@ -122,25 +117,17 @@ DTable.prototype = {
         r.push(h.ref);
       }
     }
-    //r = _.clean(r)
     return r;
   },
 
-  getLastId : function (){
-    //var id = 0;
-
-    var data = this.currData();
+  getLastId : function (table){
+    var data = this.getData(table);
     if(_.isEmpty(data)) return 0;
 
     var max = _.max(data,function(obj){
       return obj.id;
     });
 
-    /*
-    for(var i in data){
-      var c = data[i]['id'];
-      if(c > id) id = c;
-    } */     
     return max;
   },
 
@@ -172,14 +159,6 @@ DTable.prototype = {
     return this.getHeaderTree(this.currTable);
   },
 
-  getStrippedTableHeaders : function(){
-    var b = this.currHeaderTree().traverseBreadth(function(node,par){      
-      var node = _.omit(node,['children','parent']);
-      return node;
-    });
-    return b;    
-  },
-
   //id : combo of all DHeader.named + '.'
   hideHeader : function(id,doHide){
 
@@ -191,45 +170,100 @@ DTable.prototype = {
 
     if(!node.obj.dheader.isRefId()) return;  
 
-    if(doHide){
-      tree.removeAllChildren(id);
-      for(var k in data){        
-        var obj = data[k];
-        obj[node.obj.id] = node.obj.id; //replace [] with id
-      }      
-    }
-    else{
+    if(!doHide && !this.hasChildren(node)){
       var table = node.obj.dheader.ref;
       var refHeaders = this.getHeader(table);
 
+      //we need to create new children for node so that we can assign new unique col key in the data using 'named's.
       _.each(refHeaders,function(e){
         var node1 = {
           id : node.obj.dheader.named + '.' + e.named,
           dheader : e,
-          hide : e.isRefId(),
+          hide : e.isRefId(), //hide all potential subtree
         };
         tree.addChildren(id,node1);
       });
-      //transform data
-      var refData = this.getData(table);      
-      for(var k in data){//looping all data on main table
-        var obj = data[k];
-        var refId = obj[node.obj.id];
-        obj[node.obj.id] = refData[refId.id]; //replace id with [] of ref table
-      }
     }
   },
 
-  add: function(obj){
-    this.currData()[obj['id']] = obj;
+  add: function(obj,table){
+    if(_.isUndefined(table)) table = this.currTable;
+    var id = this.getLastId(table);
+    obj.id = id;
+    this.getData(table)[id] = obj;
+    return id;
   },
 
-  update: function(obj){
-    this.currData()[obj['id']] = obj;
+  update: function(obj,table){
+    if(_.isUndefined(table)) table = this.currTable;
+    this.getData(table)[obj['id']] = obj;
   },
 
-  remove: function(obj){
-    this.currData()[obj['id']] = undefined;
+  /*
+  remove: function(obj,table){
+    if(_.isUndefined(table)) table = this.currTable;
+    this.getData(table)[obj['id']] = undefined;
   },
+  */
+
+  getEdgeHeaders: function(){
+    var edges = [];
+    var hasChildren = this.hasChildren;
+
+    this.currHeaderTree().traverseDepth(function(node){
+      if(node.obj.hide || !hasChildren(node)){
+        edges.push(node);
+      }
+      return node.obj.hide; //cutoff fn
+    });
+
+    return edges;
+  },
+
+  hasChildren : function(node){
+    if(_.isUndefined(node.children)) return false;
+    return node.children.length !== 0; 
+  },
+
+  getMultiLevelHeaders : function(){
+    var retObj = [];
+
+    this.currHeaderTree().traverseDepth(function(node){
+      var level = node.level - 1;
+      var l = retObj[level];
+      if(_.isUndefined(l)){ //add next level array if none
+        l = [];
+        retObj[level] = l;        
+      }
+
+      l.push(node);
+
+      return node.obj.hide; //cutoff fn
+    });
+
+    //return retObj;
+
+    var retObj2 = [];
+    var hasChildren = this.hasChildren;
+    var height = retObj.length;
+
+    //convert for html table
+    //only can do this here as we don't know subtree height before that.
+    for(var i=0; i<retObj.length;i++){
+      var innerArray = retObj[i];
+      var l2 = [];
+      retObj2.push(l2);
+      for(var j=0; j<innerArray.length;j++){
+        var node = innerArray[j];
+        l2.push(_.extend(
+          {
+            rowspan: (hasChildren(node) ? 1: height + 1 - node.level),
+            colspan: (!hasChildren(node) || node.hide ? 1 : node.children.length),
+          },node)
+        );
+      }
+    }    
+    return retObj2;
+  },  
   
 };

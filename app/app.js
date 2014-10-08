@@ -53,14 +53,13 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
   $scope.currentTable = 'dynamic_table_2';
 
   function refresh(){
-    var cols = DataTable.currHeaderTree().traverseEdges();
-    var headers = DataTable.getStrippedTableHeaders();
+    var cols = DataTable.getEdgeHeaders();
+    var headers = DataTable.getMultiLevelHeaders();
     var data = DataTable.currData();
     $scope.headers = headers;
     $scope.cols = cols;
-    //$scope.data =  _.values(data); //strip out arrays
     $scope.data =  data; //strip out arrays
-    $scope.mapOfData = DataTable.mapOfData;
+    
   };
 
   //watching changes in $scope.currentTable in js
@@ -71,7 +70,11 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
   });  
 
   $scope.translate = function (edge,rowObj){
-    return DataTable.translate(edge,rowObj);
+    if(edge.obj.hide) return '...';
+    //var key = edge.obj.dheader.id;
+    //rowObj = DataTable.getRefRow(edge,rowObj);
+    //return rowObj[key];
+    return DataTable.getRefValue(edge,rowObj)
   };
 
   $scope.rowClass = function(row){
@@ -80,33 +83,41 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
     return '';
   };
 
-  $scope.filterRef = function(objArray){
+  //for some reason, it returns all data even in filter we pass in "v" (in data).
+  $scope.filterRef = function(data){
     var query = $scope.query;
     var retArray;
+
+    //filtering
     if(!query){
-      retArray = objArray;
+      retArray = _.toArray(data);
     }
     else{
       retArray = [];
-      _.each(objArray,function(obj){
-        if(_.propertyContains(obj,query)){
-          retArray.push(obj);
-        }        
-      });      
+
+      var edges = $scope.cols;
+
+      for(var j in  data){
+        var objRow = data[j];
+        for(var i=0; i < edges.length; i++){
+          var edge = edges[i];
+          var refValue = DataTable.getRefValue(edge,objRow); //todo. prob need to improve the algo
+          if(refValue.toString().contains(query)){
+            retArray.push(objRow);
+            break;
+          }          
+        }
+      }
     }
 
     //sorting
-    var orderBy = $scope.orderBy;
+    var orderBy = $scope.orderBy;    
     if(orderBy){
-      var splitted = orderBy.split(".");
+      var edge = DataTable.currHeaderTree().find(orderBy);
       retArray = retArray.sort(function(a,b){
-        for(var i=0; i<splitted.length; i++){
-          var s = splitted[i];
-          if(i !== splitted.length - 1) s +=  '_refid';
-          a = a[s];
-          b = b[s];
-        }
-        return a > b;
+        var refA = DataTable.getRefValue(edge,a);
+        var refB = DataTable.getRefValue(edge,b);
+        return refA> refB;
       });
     }
     
@@ -130,22 +141,16 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
   //var modalInstance;
 
   $scope.openModal = function(obj){
-    //var clone = angular.copy(obj);
     var cloneObj = _.clone(obj);
-
-    _.each(cloneObj,function(v,k){ //reduce all refid back to {} as don't want to change obj inside
-      if(_.isObject(v)){
-        cloneObj[k] = {id:v.id};
-      } 
-    });
-
-    $scope.formObj = cloneObj;
-    $scope.modalInstance = $modal.open({
+    var childScope = $scope.$new();
+    childScope.formObj = cloneObj;
+    childScope.headers = $scope.headers[0]; //pass the root headers
+    childScope.modalInstance = $modal.open({
       //templateUrl : 'editModal',
       templateUrl : 'views/edit-form.html',
       controller : 'FormCtrl',
       size : 'lg',        
-      scope : $scope,
+      scope : childScope,
     });
   };
 
@@ -156,6 +161,8 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
   */
 }]).
 controller('FormCtrl', ['$scope','DataTable', function($scope,DataTable){
+
+  $scope.mapOfData = DataTable.mapOfData;
 
   $scope.clone = function(){          
     var formObj = $scope.formObj;
@@ -182,25 +189,6 @@ controller('FormCtrl', ['$scope','DataTable', function($scope,DataTable){
     $scope.formObj = {};
   };
 
-}]).
-controller('TestCtrl', ['$scope','$http','DataFactory', 'SyncDataFactory','$q','$interval', function($scope,$http,DataFactory,SyncDataFactory,$q,$interval){
-
-  $scope.data = "NYS!";
-
-  var data = DataFactory.query({table:'primary1'});
-
-  data.$promise.then(function(data){
-    $scope.data = data;
-  });
-    /*
-    var promise = SyncDataFactory.sync();
-    promise.then(function(data){
-      $scope.data = data;
-    }, function(reason){
-      $scope.data = reason;
-    }, function(update){
-      $scope.data = update;
-    });*/
 }]).
 filter('cleanCol',function(){
   return function(input){    

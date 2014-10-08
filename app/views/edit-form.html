@@ -1,31 +1,30 @@
-<!-- script type="text/ng-template" id="editModal" -->
+<script type="text/ng-template" id="editModal">
   <div class="modal-header">
       <h3 class="modal-title">Edit Form</h3>
   </div>
-  <div class="modal-body"><!--{{headers[0]}}-->
-    <!-- div class="row well" -->
+  <div class="modal-body">
       <form class='form-horizontal' role='form'>
-        <div class='form-group' ng-repeat='k in headers[0]'><!-- using only top breadth nodes -->
+        <div class='form-group' ng-repeat='k in headers'><!-- using only top breadth nodes -->
             <label for='{{k.obj.dheader.named}}' class='col-sm-3 control-label text-capitalize'>{{k.obj.dheader.named}}</label>          
             <div class='col-sm-9'>
               <div ng-if='!k.obj.dheader.isRefId()'>
                 <input class='form-control' type='text' placeholder='Enter Text' ng-model='formObj[k.obj.dheader.id]' ng-disabled='k.obj.dheader.id == "id"'>                
               </div>
-              <div ng-if='k.obj.dheader.isRefId()'><!-- Need to ensure that it passes === test! -->{{formObj[k.obj.dheader.id].id}} === {{mapOfData[k.obj.dheader.ref]}}
-                <select class='form-control' ng-model='formObj[k.obj.dheader.id].id' ng-options='v.id as v.name for (k,v) in mapOfData[k.obj.dheader.ref]'>
-                  <!--option ng:repeat="v in mapOfData[k.obj.dheader.ref]" value="{{v.id}}">{{v.id}}-{{v.name}}</option-->
+              <div style="white-space:nowrap" ng-if='k.obj.dheader.isRefId()'><!-- Need to ensure that it passes === test! {{formObj[k.obj.dheader.id]}} === {{mapOfData[k.obj.dheader.ref]}}-->
+                <select style="display:inline"  class='form-control' ng-model='formObj[k.obj.dheader.id]' ng-options='v.id as v.name for (k,v) in mapOfData[k.obj.dheader.ref]'>
                 </select>
+                <span class='glyphicon glyphicon-plus'></span>
               </div>
             </div>
         </div>
-        <div class='col-sm-2'></div>
-        <div class='col-sm-10 btn-group btn-group-lg'>
-          <button type="button" ng-click="clone()" class="btn btn-primary">Clone</button>
-          <button type="button" ng-click="update()" class="btn btn-warning">Update</button>
-          <button type="button" ng-click="delete()" class="btn btn-danger">Delete</button>
-          <button type="button" ng-click="clear()" class="btn btn-default">Clear</button>
-        </div>
       </form>
-    <!-- /div -- >
   </div>
-<!--/script -->
+</script>
+<div ng-include src="editModal"></div>
+<div class='col-sm-2'></div>
+<div class='col-sm-10 btn-group btn-group-lg'>
+  <button type="button" ng-click="clone()" class="btn btn-primary">Clone</button>
+  <button type="button" ng-click="update()" class="btn btn-warning">Update</button>
+  <button type="button" ng-click="delete()" class="btn btn-danger">Delete</button>
+  <button type="button" ng-click="clear()" class="btn btn-default">Clear</button>
+</div>

@@ -1,5 +1,14 @@
 'use strict';
 
+    /** Column standards “Using Convention Over Config"
+      ===================================================
+      id                  : each table will have one as primary key
+      <ref table>_refid      : map to another table
+      <named>-<ref table>_refid : 'named' ref table. this maps to a ref table but table header will show '<Colname> <ref table>'s col> on column header
+      *_[date,email,month,num,time,url,week,bool] : show the respective angular widget
+      Everything else will show a typeahead input type='text'
+      **/
+
 //Data in there should be static for easy references by other logic
 DHeader.types = ['date','email','month','num','time','url','week','bool','refid'];
 
@@ -43,14 +52,7 @@ DHeader.prototype = {
   },
 
   getDisplay : function(){
-    //return this.hide ? '...' : this.named;
     return this.named;
   },
 
 };
-
-/*
-function DHeaderOps (dheader,hide){
-  this.dheader = dheader;
-  this.hide = hide;
-}*/

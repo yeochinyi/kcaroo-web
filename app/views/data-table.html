@@ -25,14 +25,13 @@
       </select>
     </div>
   </div>
-
 </div>
 
-<div class="row">
+<div class="panel panel-default">
   <table id='data-table' class='table table-bordered table-striped table-hover table-condensed'>
     <thead>
       <tr ng:repeat='breadth in headers' class='repeated-item'>
-        <th ng:repeat='k in breadth' class='repeated-item' rowspan='{{k.childnum === 0 ? (headers.length + 1 - k.level): 1 }}' colspan='{{k.childnum === 0 ? 1 : k.childnum}}' ng-class='{rotate_cell:k.obj.hide}'>
+        <th ng:repeat='k in breadth' class='repeated-item' rowspan='{{k.rowspan}}' colspan='{{k.colspan}}' ng-class='{rotate_cell:k.obj.hide}'>
           <span ng-class='{rotate:k.obj.hide}' ng-click='sort(k.obj.id)'>
             <span class='glyphicon' ng-class='{"glyphicon-zoom-out": !k.obj.hide, "glyphicon-zoom-in": k.obj.hide}' ng-click='hide(k.obj.id,!k.obj.hide)'></span>
             <span class='text-capitalize'>{{k.obj.dheader.named}}</span>            
@@ -41,9 +40,7 @@
       </tr>
     </thead>
     <tbody>
-        <!--tr class='animate-repeat' ng-class='rowClass(v)' ng:repeat='v in dTable.currData() | filter:filterRefValue | orderBy:orderProp track by v.id'>
-          <td ng:repeat='k in dTable.currHeaders()' ng-dblclick='openModal(v.id,v[k.id])' ng-click='select(v.id,v[k.id])'>{{ v[k.id] | convert:k:translate }}</td-->
-        <tr class='repeated-item' ng:repeat='v in data | custom:v:filterRef track by v.id'>
+        <tr class='repeated-item' ng-class='rowClass(v)' ng:repeat='v in data | custom:v:filterRef track by v.id'>
           <td ng:repeat='k in cols' class='repeated-item' ng-dblclick='openModal(v)'>{{translate(k,v)}}</td>
         </tr>
     </tbody>  

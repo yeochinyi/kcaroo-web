@@ -1,10 +1,24 @@
 
 'use strict';
 
-/*
-function Node(copyObj){
-  _.extend(this,copyObj);
-}*/
+/*Assumptions
+ 1. nodes always contains obj with attribute "id" which has to be unique..
+ 2. create a structure like this
+
+ root
+  - children:[...]
+    - ...
+    - { //#1 <-- find will return this level...
+      level:... , 
+      parent:root, 
+      obj:{id:...}, 
+      children:[...] 
+      }
+      - ...
+      - { ... parent:#1, ...}
+
+*/
+
 
 function Tree(){
   this.config = {};
@@ -15,6 +29,7 @@ function Tree(){
 
 Tree.prototype = {
 
+  //return the node nothing the cotaining obj
   find : function(id){
     return t.find(this.tree, this.config, function(node, par) {    
       if(_.isUndefined(node.obj)) return false;
@@ -22,22 +37,12 @@ Tree.prototype = {
     });
   },
 
-  addChildren : function(id, objArray){
+  addChildrenByNode : function(node,objArray){
 
     if(!_.isArray(objArray)){
       objArray = [objArray];
     }
 
-    var node;
-    if(id === ''){
-      node = this.tree;
-    }
-    else{
-      node = this.find(id);
-      if(node === null)
-        return false;
-    }
-    
     if(_.isUndefined(node.children)) node.children = [];
 
     //can't pollute the obj
@@ -51,6 +56,24 @@ Tree.prototype = {
     });
 
     return true;
+
+  },
+
+  //add array as children to found node
+  addChildren : function(id, objArray){
+
+    var node;
+    if(id === ''){
+      node = this.tree;
+    }
+    else{
+      node = this.find(id);
+      if(node === null)
+        return false;
+    }
+
+    return this.addChildrenByNode(node,objArray);
+    
   },
 
   removeAllChildren : function(id){
@@ -60,22 +83,22 @@ Tree.prototype = {
     return true;
   },
 
+  /*
   traverseBreadth : function(traverseFn){
     var retArray = [];
     var innerArray = [];
     
-    var level = 1;
-    //retArray.push({level:innerArray});
+    var level = 0;
+
+    
     retArray.push(innerArray);
     t.bfs(this.tree, this.config, function(node, par, ctrl){
       if(!_.isUndefined(par)){ //skip root
         if(node.level != level){
           innerArray = [];
-          //retArray.push({level:innerArray});
           retArray.push(innerArray);
           level = node.level;
         }
-        //var node = new Node({
         _.extend(node,{
           level : node.level,
           childnum : _.isUndefined(node.children) ? 0 : node.children.length,
@@ -89,23 +112,22 @@ Tree.prototype = {
       }
     });
     return retArray;
-  },
+    
+  },*/
 
-  traverseEdges :  function(){
+  traverseDepth :  function(cutOffFn){
     var retArray = [];
 
     t.dfs(this.tree, this.config, function(node, par, ctrl){
       if(!_.isUndefined(par)){ // skip root
-        if(_.isUndefined(node.children) || node.children.length === 0 ){
+        //if(_.isUndefined(node.children) || node.children.length === 0 ){
+          if(_.isFunction(cutOffFn) && cutOffFn(node)) ctrl.cutoff = true;
           retArray.push(node);
-        }
+        //}
       }
     });
     return retArray;
   },
 
-  traverseDepth : function(traverseFn){
-    t.dfs(this.tree, this.config, traverseFn);
-  },
 
 };
