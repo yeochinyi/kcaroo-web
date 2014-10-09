@@ -27,8 +27,8 @@
   </div>
 </div>
 
-<div class="panel panel-default">
-  <table id='data-table' class='table table-bordered table-striped table-hover table-condensed'>
+<!--div class="panel panel-default"-->
+  <table id='data-table' class='table table-bordered table-striped table-hover table-condensed table-curved'>
     <thead>
       <tr ng:repeat='breadth in headers' class='repeated-item'>
         <th ng:repeat='k in breadth' class='repeated-item' rowspan='{{k.rowspan}}' colspan='{{k.colspan}}' ng-class='{rotate_cell:k.obj.hide}'>
@@ -41,8 +41,8 @@
     </thead>
     <tbody>
         <tr class='repeated-item' ng-class='rowClass(v)' ng:repeat='v in data | custom:v:filterRef track by v.id'>
-          <td ng:repeat='k in cols' class='repeated-item' ng-dblclick='openModal(v)'>{{translate(k,v)}}</td>
+          <td ng:repeat='k in cols' class='repeated-item' ng-dblclick='dblClickRow(v)'>{{translate(k,v)}}</td>
         </tr>
     </tbody>  
   </table>
-</div>
+<!--/div-->

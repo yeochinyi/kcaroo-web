@@ -47,7 +47,7 @@ factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
   return dTable;
 }]).
-controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataTable,$modal){  
+controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootScope',function($scope,DataTable,$modal,$location,$rootScope){  
 
   $scope.tables = ['dynamic_table_2','static_table_1'];
   $scope.currentTable = 'dynamic_table_2';
@@ -117,7 +117,7 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
       retArray = retArray.sort(function(a,b){
         var refA = DataTable.getRefValue(edge,a);
         var refB = DataTable.getRefValue(edge,b);
-        return refA> refB;
+        return refA > refB;
       });
     }
     
@@ -140,7 +140,12 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
 
   //var modalInstance;
 
-  $scope.openModal = function(obj){
+  $scope.dblClickRow = function(obj){
+    $rootScope.$broadcast('SOME_TAG', 'your value'); //doesn't work 
+    $location.path('/edit/' + obj.id);
+  }
+
+  var openModal = function(obj){
     var cloneObj = _.clone(obj);
     var childScope = $scope.$new();
     childScope.formObj = cloneObj;
@@ -160,9 +165,22 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal',function($scope,DataT
   });
   */
 }]).
-controller('FormCtrl', ['$scope','DataTable', function($scope,DataTable){
+controller('FormCtrl', ['$scope','$routeParams','$location','DataTable', function($scope,$routeParams,$location,DataTable){
+
+  if(!DataTable.isInit){
+    $location.path('/data');
+    return;
+  } 
 
   $scope.mapOfData = DataTable.mapOfData;
+
+  var id = $routeParams.id;
+  $scope.formObj = DataTable.currData()[id];
+  $scope.headers = DataTable.currHeaders();  
+
+  $scope.$on('SOME_TAG', function(response) {
+    console.log(response);
+  });
 
   $scope.clone = function(){          
     var formObj = $scope.formObj;
@@ -210,6 +228,10 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: 'views/data-table.html',
     controller : 'DataTableCtrl',
   })
+  .when('/edit/:id', {
+    templateUrl: 'views/edit-form.html',
+    controller : 'FormCtrl',
+  })  
   .when('/test', {
     templateUrl: 'views/test.html',
     controller : 'TestCtrl',

@@ -30,6 +30,7 @@ function DTable (){
 
     this.mapOfHeaderTree = {};
 
+    //this.isInit = false;
 }
 
 DTable.prototype = {
@@ -61,19 +62,6 @@ DTable.prototype = {
     return this.mapOfData[table] != null;
   },
 
-  /**
-    dataArray is JSON array i.e
-    [
-      {
-        'id': 1,
-        'name': 't21',
-      },
-      {
-        'id': 2,
-        'name': 't22',
-      }
-    ]
-  */
   addData : function(table,objArray){
     if(this.hasTable(table)) return;
     var headers = this.createHeaders(table,objArray[0]);
@@ -83,6 +71,7 @@ DTable.prototype = {
       refMap[obj.id] = obj;      
     });                 
     this.mapOfData[table] = refMap;  
+    this.isInit = true;
   },
 
   //to be use when there is no data in the table.
