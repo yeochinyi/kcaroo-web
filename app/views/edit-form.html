@@ -1,25 +1,28 @@
 <script type="text/ng-template" id="editModal">
-  <div class="modal-header">
-      <h3 class="modal-title">Edit Form</h3>
-  </div>
   <div class="modal-body">
       <form class='form-horizontal' role='form'>
         <div class='form-group' ng-repeat='k in headers'><!-- using only top breadth nodes -->
-            <label for='{{k.named}}' class='col-sm-3 control-label text-capitalize'>{{k.named}}</label>          
-            <div class='col-sm-9'>
+            <label for='{{k.named}}' class='col-sm-1 control-label text-capitalize'>{{k.named}}</label>          
+            <div class='col-sm-11'>
               <div ng-if='!k.isRefId()'>
                 <input class='form-control' type='text' placeholder='Enter Text' ng-model='formObj[k.id]' ng-disabled='k.id == "id"'>                
               </div>
               <div style="white-space:nowrap" ng-if='k.isRefId()'><!-- Need to ensure that it passes === test! {{formObj[k.obj.dheader.id]}} === {{mapOfData[k.obj.dheader.ref]}}-->
                 <select style="display:inline"  class='form-control' ng-model='formObj[k.id]' ng-options='v.id as v.name for (k,v) in mapOfData[k.ref]'>
-                </select>
-                <span class='glyphicon glyphicon-plus'></span>
+                </select>         
+                <span ng-click="createChild(formObj[k.id],k)" class='glyphicon glyphicon-plus'></span>
+                <span ng-controller='InnerFormCtrl'>                  
+                  <div  class="slide-animate" ng-include src="template"></div>
+                </span>
               </div>
             </div>
         </div>
       </form>
   </div>
 </script>
+<div class="modal-header">
+    <h3 class="modal-title">Edit Form</h3>
+</div>
 <div ng-include src="'editModal'"></div>
 <div class='col-sm-2'></div>
 <div class='col-sm-10 btn-group btn-group-lg'>

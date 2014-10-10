@@ -167,31 +167,6 @@ animate.
     }
 }
 
-/*
-table { 
-  border: 1px solid #ddd;
-  border-collapse: separate;
-  border-left: 0;
-  border-radius: 20px;
-  border-spacing: 0px;
-}
-
-thead:first-child tr:first-child th:first-child {
-  border-radius: 20px 0 0 0;
-}
-
-thead:first-child tr:first-child th:last-child {
-  border-radius: 0 20px 0 0;
-}
-
-tbody:last-child tr:last-child td:first-child {
-    border-radius: 0 0 0 20px;
-}
-
-tbody:last-child tr:last-child td:last-child {
-    border-radius: 0 0 20px 0;
-}*/
-
 
 .table-curved { 
   border: 1px solid #ddd;
@@ -217,7 +192,34 @@ tbody:last-child tr:last-child td:last-child {
     border-radius: 0 0 20px 0;
 }
 
-/*
-@keyframes spin {
-    50% {transform: rotate(-90deg);}
-}*/
+
+.slide-animate {
+  padding:10px;
+}
+
+.slide-animate.ng-enter, .slide-animate.ng-leave {
+  -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+  transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s;
+
+  position:absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  display:block;
+  padding:10px;
+}
+
+.slide-animate.ng-enter {
+  top:-50px;
+}
+.slide-animate.ng-enter.ng-enter-active {
+  top:0;
+}
+
+.slide-animate.ng-leave {
+  top:0;
+}
+.slide-animate.ng-leave.ng-leave-active {
+  top:50px;
+}

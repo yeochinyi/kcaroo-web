@@ -207,6 +207,15 @@ controller('FormCtrl', ['$scope','$routeParams','$location','DataTable', functio
     $scope.formObj = {};
   };
 
+  $scope.createChild = function(value,header){
+    $scope.template = 'editModal';
+  };
+
+}]).
+controller('InnerFormCtrl', ['$scope','DataTable', function($scope,DataTable){
+  //$scope.template = '';
+
+
 }]).
 filter('cleanCol',function(){
   return function(input){    
