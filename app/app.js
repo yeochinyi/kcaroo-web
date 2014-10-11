@@ -8,6 +8,47 @@ angular.module('myApp', [
   'ngResource',
   'ui.bootstrap',
   ]).
+factory('RecursionHelper', ['$compile', function($compile){
+    return {
+        /**
+         * Manually compiles the element, fixing the recursion loop.
+         * @param element
+         * @param [link] A post-link function, or an object with function(s) registered via pre and post properties.
+         * @returns An object containing the linking functions.
+         */
+        compile: function(element, link){
+            // Normalize the link parameter
+            if(angular.isFunction(link)){
+                link = { post: link };
+            }
+
+            // Break the recursion loop by removing the contents
+            var contents = element.contents().remove();
+            var compiledContents;
+            return {
+                pre: (link && link.pre) ? link.pre : null,
+                /**
+                 * Compiles and re-adds the contents
+                 */
+                post: function(scope, element){
+                    // Compile the contents
+                    if(!compiledContents){
+                        compiledContents = $compile(contents);
+                    }
+                    // Re-add the compiled contents to the element
+                    compiledContents(scope, function(clone){
+                        element.append(clone);
+                    });
+
+                    // Call the post-linking function, if any
+                    if(link && link.post){
+                        link.post.apply(null, arguments);
+                    }
+                }
+            };
+        }
+    };
+}]).
 factory('DataFactory',['$resource', function($resource) {
   var p = $resource('sample/:table.json',{},{
     query: {method:'GET',params:{table:'table'},isArray:true},
@@ -172,50 +213,66 @@ controller('FormCtrl', ['$scope','$routeParams','$location','DataTable', functio
     return;
   } 
 
-  $scope.mapOfData = DataTable.mapOfData;
-
+  //$scope.mapOfData = DataTable.mapOfData;
   var id = $routeParams.id;
-  $scope.formObj = DataTable.currData()[id];
-  $scope.headers = DataTable.currHeaders();  
+  $scope.obj = DataTable.currData()[id];
+  $scope.table = DataTable.currTable;
+  //$scope.headers = DataTable.currHeaders();  
 
+  /*
   $scope.$on('SOME_TAG', function(response) {
     console.log(response);
   });
+  */
 
   $scope.clone = function(){          
-    var formObj = $scope.formObj;
-    DataTable.add(formObj);
-    $scope.modalInstance.close();  
+    DataTable.add($scope.obj);
+    $location.path('/data');
   };
 
   $scope.update = function(){          
-    var formObj = $scope.formObj;
-    DataTable.update(formObj);
-    $scope.modalInstance.close();
+    DataTable.update($scope.obj);
+    $location.path('/data');
   };
 
   $scope.delete = function(){ 
     //remove(formObj);
     //soft delete
-    var formObj = $scope.formObj;
-    formObj['$ops'] = 'delete';
-    DataTable.update(formObj);
-    $scope.modalInstance.close();
+    var obj = $scope.obj;
+    obj['$ops'] = 'delete';
+    DataTable.update(oj);
+    $location.path('/data');
   };
 
   $scope.clear = function(){      
-    $scope.formObj = {};
-  };
-
-  $scope.createChild = function(value,header){
-    $scope.template = 'editModal';
+    $scope.obj = {};
   };
 
 }]).
-controller('InnerFormCtrl', ['$scope','DataTable', function($scope,DataTable){
-  //$scope.template = '';
+directive('dynamicEditForm',['DataTable','RecursionHelper', function(DataTable,RecursionHelper) {
 
+    function link(scope, element, attrs) {
+      scope.mapOfData = DataTable.mapOfData;
+      scope.headers = DataTable.getHeader(scope.dheader.ref);
+      scope.obj = 
+    }
 
+  return {
+    restrict: 'AEC',
+    scope: {
+      obj: '=',
+      dheader: '=',
+      parent: '=',
+    },
+    templateUrl: 'views/edit-form-inner.html',
+    compile: function(element) {
+            // Use the compile function from the RecursionHelper,
+            // And return the linking function(s) which it returns
+            return RecursionHelper.compile(element,link);
+    },
+    //link: link, //doesn't work now that we override compile
+
+  }
 }]).
 filter('cleanCol',function(){
   return function(input){    
