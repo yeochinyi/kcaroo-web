@@ -26,11 +26,9 @@ function DTable (){
     //this.mapOfColHeaderMap = {};
 
     // easier to call current table data
-    //this.currTable;
+    //this.currTable; doesn't work as it mon 1 table
 
     this.mapOfHeaderTree = {};
-
-    //this.isInit = false;
 }
 
 DTable.prototype = {
@@ -58,12 +56,19 @@ DTable.prototype = {
     //return rowObj;
   },
 
+  getTableNames : function(){
+    return _.keys(this.mapOfData);
+  },
+
   hasTable : function(table){
     return this.mapOfData[table] != null;
   },
 
   addData : function(table,objArray){
     if(this.hasTable(table)) return;
+
+    if(!this.currTable) this.currTable = table;
+
     var headers = this.createHeaders(table,objArray[0]);
 
     var refMap = {}; // create objmap of row id vs dataObj
@@ -71,7 +76,7 @@ DTable.prototype = {
       refMap[obj.id] = obj;      
     });                 
     this.mapOfData[table] = refMap;  
-    this.isInit = true;
+    //this.isInit = true; doesn't work as it mon 1 table
   },
 
   //to be use when there is no data in the table.
@@ -95,19 +100,7 @@ DTable.prototype = {
     }
     this.mapOfHeaders[table] = headers;
     return headers;
-  },
-  
-  currRefTables : function(){
-    var r = [];
-    var headers = this.currHeaders();
-    for(var i in headers){
-      var h = headers[i];
-      if(_.isString(h.ref) && h.id.contains('_refid')){
-        r.push(h.ref);
-      }
-    }
-    return r;
-  },
+  },  
 
   getLastId : function (table){
     var data = this.getData(table);
@@ -120,15 +113,31 @@ DTable.prototype = {
     return max;
   },
 
+  getRefTables : function(table){
+    if(_.isUndefined(table)) table = this.currTable;
+    var r = [];
+    var headers = this.getHeader(table);
+    for(var i in headers){
+      var h = headers[i];
+      if(_.isString(h.ref) && h.id.contains('_refid')){
+        r.push(h.ref);
+      }
+    }
+    return r;
+  },
+
   getData : function(table){
+    if(_.isUndefined(table)) table = this.currTable;
     return this.mapOfData[table];
   },
 
   getHeader : function(table){
+    if(_.isUndefined(table)) table = this.currTable;
     return this.mapOfHeaders[table];
   },
 
   getHeaderTree : function(table){
+    if(_.isUndefined(table)) table = this.currTable;
     return this.mapOfHeaderTree[table];
   },
 
@@ -136,6 +145,11 @@ DTable.prototype = {
     this.currTable = table;
   },
 
+  getCurrent : function(){
+    return this.currTable;
+  },
+
+  /*
   currData : function(){
     return this.getData(this.currTable);
   },
@@ -147,13 +161,15 @@ DTable.prototype = {
   currHeaderTree : function(){
     return this.getHeaderTree(this.currTable);
   },
+  */
 
   //id : combo of all DHeader.named + '.'
-  hideHeader : function(id,doHide){
+  hideHeader : function(id,doHide,table){
+    if(_.isUndefined(table)) table = this.currTable;
 
-    var tree = this.currHeaderTree()
+    var tree = this.getHeaderTree(table)
     var node = tree.find(id);
-    var data = this.currData(); 
+    var data = this.getData(table); 
 
     node.obj.hide = doHide;
 
@@ -199,7 +215,7 @@ DTable.prototype = {
     var edges = [];
     var hasChildren = this.hasChildren;
 
-    this.currHeaderTree().traverseDepth(function(node){
+    this.getHeaderTree().traverseDepth(function(node){
       if(node.obj.hide || !hasChildren(node)){
         edges.push(node);
       }

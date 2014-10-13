@@ -9,45 +9,45 @@ angular.module('myApp', [
   'ui.bootstrap',
   ]).
 factory('RecursionHelper', ['$compile', function($compile){
-    return {
-        /**
-         * Manually compiles the element, fixing the recursion loop.
-         * @param element
-         * @param [link] A post-link function, or an object with function(s) registered via pre and post properties.
-         * @returns An object containing the linking functions.
-         */
-        compile: function(element, link){
-            // Normalize the link parameter
-            if(angular.isFunction(link)){
-                link = { post: link };
+  return {
+    /**
+    * Manually compiles the element, fixing the recursion loop.
+    * @param element
+    * @param [link] A post-link function, or an object with function(s) registered via pre and post properties.
+    * @returns An object containing the linking functions.
+    */
+    compile: function(element, link){
+      // Normalize the link parameter
+      if(angular.isFunction(link)){
+        link = { post: link };
+      }
+
+      // Break the recursion loop by removing the contents
+      var contents = element.contents().remove();
+      var compiledContents;
+      return {
+        pre: (link && link.pre) ? link.pre : null,
+          /**
+           * Compiles and re-adds the contents
+           */
+          post: function(scope, element){
+            // Compile the contents
+            if(!compiledContents){
+              compiledContents = $compile(contents);
             }
+            // Re-add the compiled contents to the element
+            compiledContents(scope, function(clone){
+              element.append(clone);
+            });
 
-            // Break the recursion loop by removing the contents
-            var contents = element.contents().remove();
-            var compiledContents;
-            return {
-                pre: (link && link.pre) ? link.pre : null,
-                /**
-                 * Compiles and re-adds the contents
-                 */
-                post: function(scope, element){
-                    // Compile the contents
-                    if(!compiledContents){
-                        compiledContents = $compile(contents);
-                    }
-                    // Re-add the compiled contents to the element
-                    compiledContents(scope, function(clone){
-                        element.append(clone);
-                    });
-
-                    // Call the post-linking function, if any
-                    if(link && link.post){
-                        link.post.apply(null, arguments);
-                    }
-                }
-            };
-        }
-    };
+            // Call the post-linking function, if any
+            if(link && link.post){
+              link.post.apply(null, arguments);
+            }
+          }
+      };
+    }
+  };
 }]).
 factory('DataFactory',['$resource', function($resource) {
   var p = $resource('sample/:table.json',{},{
@@ -56,10 +56,52 @@ factory('DataFactory',['$resource', function($resource) {
   return p;
 }]).
 factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
+
+  var tables = ['dynamic_table_2','static_table_1'];
   var dTable = new DTable();
 
-  DTable.prototype.initData = function(val,callbackFn){
-    dTable.currTable = val;
+  var promises = [];
+  _.each(tables,function(table){
+    var data = DataFactory.query({table:table});
+    promises.push(data.$promise.then(function(data){
+      dTable.addData(table,data);
+    }));          
+  });
+
+  return {
+    getDataTable: function(){
+      var promise = $q.all(promises).then(
+        return dTable;
+      );
+      return promise;
+    },
+    //promise: $q.all(promises),
+    //getEdgeHeaders: dTable.getEdgeHeaders,
+    //getMultiLevelHeaders: dTable.getMultiLevelHeaders,
+    //getData: dTable.getData,
+    //getTableNames: dTable.getTableNames,
+    //getCurrent: dTable.getCurrent,
+    //getRefValue: dTable.getRefValue,
+    //getHeaderTree: dTable.getHeaderTree,    
+  };
+
+  /*
+  DTable.prototype.initData = function(tables,callbackFn){
+    //dTable.currTable = val;
+
+    var promises = [];
+    _.each(tables,function(table){
+      var data = DataFactory.query({table:table});
+      promises.push(data.$promise.then(function(data){
+        dTable.addData(table,refData);
+      }));          
+    });
+
+    $q.all(promises).then(function(){
+      if(_.isFunction(callbackFn))
+        callbackFn();
+    });    
+    
     var data = DataFactory.query({table:val});
     data.$promise.then(function(data){
       //Get Data
@@ -69,7 +111,7 @@ factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
       var promises = [];
       //Get Headers & all necessary static data
 
-      var tables = dTable.currRefTables();
+      var tables = dTable.getRefTables();
       for(var i in tables){
         var table = tables[i];
         if(!_.isString(table)) continue;
@@ -81,27 +123,32 @@ factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
       //all promises resolved, time to massage current table data
       $q.all(promises).then(function(){
-        callbackFn();
+        if(_.isFunction(callbackFn))
+          callbackFn();
       });
-    });      
+    });
   };
+  */ 
 
-  return dTable;
+
+  //return dTable;
 }]).
 controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootScope',function($scope,DataTable,$modal,$location,$rootScope){  
 
-  $scope.tables = ['dynamic_table_2','static_table_1'];
-  $scope.currentTable = 'dynamic_table_2';
+  //$scope.tables = ['dynamic_table_2','static_table_1'];
+  //$scope.currentTable = 'dynamic_table_2';
 
-  function refresh(){
+  //function refresh(){
     var cols = DataTable.getEdgeHeaders();
     var headers = DataTable.getMultiLevelHeaders();
-    var data = DataTable.currData();
+    var data = DataTable.getData();
+    $scope.tables = DataTable.getTableNames();
+    $scope.currentTable = DataTable.getCurrent();
     $scope.headers = headers;
     $scope.cols = cols;
-    $scope.data =  data; //strip out arrays
+    $scope.data =  data;
     
-  };
+  //};
 
   //watching changes in $scope.currentTable in js
   $scope.$watch('currentTable',function(newVal,oldVal){
@@ -154,7 +201,7 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootSco
     //sorting
     var orderBy = $scope.orderBy;    
     if(orderBy){
-      var edge = DataTable.currHeaderTree().find(orderBy);
+      var edge = DataTable.getHeaderTree().find(orderBy);
       retArray = retArray.sort(function(a,b){
         var refA = DataTable.getRefValue(edge,a);
         var refB = DataTable.getRefValue(edge,b);
@@ -186,6 +233,7 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootSco
     $location.path('/edit/' + obj.id);
   }
 
+  /*
   var openModal = function(obj){
     var cloneObj = _.clone(obj);
     var childScope = $scope.$new();
@@ -199,6 +247,7 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootSco
       scope : childScope,
     });
   };
+  */
 
   /*
   $scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
@@ -250,12 +299,11 @@ controller('FormCtrl', ['$scope','$routeParams','$location','DataTable', functio
 
 }]).
 directive('dynamicEditForm',['DataTable','RecursionHelper', function(DataTable,RecursionHelper) {
-
-    function link(scope, element, attrs) {
-      scope.mapOfData = DataTable.mapOfData;
-      scope.headers = DataTable.getHeader(scope.dheader.ref);
-      scope.obj = 
-    }
+  function link(scope, element, attrs) {
+    scope.mapOfData = DataTable.mapOfData;
+    scope.headers = DataTable.getHeader(scope.dheader.ref);
+    //scope.obj = 
+  }
 
   return {
     restrict: 'AEC',
@@ -266,12 +314,11 @@ directive('dynamicEditForm',['DataTable','RecursionHelper', function(DataTable,R
     },
     templateUrl: 'views/edit-form-inner.html',
     compile: function(element) {
-            // Use the compile function from the RecursionHelper,
-            // And return the linking function(s) which it returns
-            return RecursionHelper.compile(element,link);
+      // Use the compile function from the RecursionHelper,
+      // And return the linking function(s) which it returns
+      return RecursionHelper.compile(element,link);
     },
     //link: link, //doesn't work now that we override compile
-
   }
 }]).
 filter('cleanCol',function(){
@@ -293,6 +340,11 @@ config(['$routeProvider', function($routeProvider) {
   .when('/data', {
     templateUrl: 'views/data-table.html',
     controller : 'DataTableCtrl',
+    resolve : {
+      DataTable : function(DataTable){
+        return DataTable.getDataTable();
+      },
+    },
   })
   .when('/edit/:id', {
     templateUrl: 'views/edit-form.html',
