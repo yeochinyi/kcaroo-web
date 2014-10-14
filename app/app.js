@@ -69,11 +69,14 @@ factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
   });
 
   return {
-    getDataTable: function(){
-      var promise = $q.all(promises).then(
+    getPromise: function(){
+      var promise = $q.all(promises).then(function(){
         return dTable;
-      );
+      });        
       return promise;
+    },
+    getDataTable: function(){
+      return dTable;
     },
     //promise: $q.all(promises),
     //getEdgeHeaders: dTable.getEdgeHeaders,
@@ -133,35 +136,23 @@ factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
   //return dTable;
 }]).
-controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootScope',function($scope,DataTable,$modal,$location,$rootScope){  
+controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$routeParams',
+  function($scope,DataTable,$modal,$location,$routeParams){  
 
-  //$scope.tables = ['dynamic_table_2','static_table_1'];
-  //$scope.currentTable = 'dynamic_table_2';
-
-  //function refresh(){
-    var cols = DataTable.getEdgeHeaders();
-    var headers = DataTable.getMultiLevelHeaders();
-    var data = DataTable.getData();
-    $scope.tables = DataTable.getTableNames();
-    $scope.currentTable = DataTable.getCurrent();
-    $scope.headers = headers;
-    $scope.cols = cols;
-    $scope.data =  data;
-    
-  //};
+  $scope.table = $routeParams.table || DataTable.getTableNames()[0];
+  $scope.DataTable = DataTable;
+  refresh();
 
   //watching changes in $scope.currentTable in js
-  $scope.$watch('currentTable',function(newVal,oldVal){
+  $scope.$watch('table',function(newVal,oldVal){
 
     if(newVal == undefined) return;    
-    DataTable.initData(newVal,refresh);
+    //DataTable.setCurrent(newVal);
+    refresh();    
   });  
 
   $scope.translate = function (edge,rowObj){
     if(edge.obj.hide) return '...';
-    //var key = edge.obj.dheader.id;
-    //rowObj = DataTable.getRefRow(edge,rowObj);
-    //return rowObj[key];
     return DataTable.getRefValue(edge,rowObj)
   };
 
@@ -183,7 +174,7 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootSco
     else{
       retArray = [];
 
-      var edges = $scope.cols;
+      var edges =  DataTable.getEdgeHeaders($scope.table);
 
       for(var j in  data){
         var objRow = data[j];
@@ -201,7 +192,7 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootSco
     //sorting
     var orderBy = $scope.orderBy;    
     if(orderBy){
-      var edge = DataTable.getHeaderTree().find(orderBy);
+      var edge = DataTable.getHeaderTree($scope.table).find(orderBy);
       retArray = retArray.sort(function(a,b){
         var refA = DataTable.getRefValue(edge,a);
         var refB = DataTable.getRefValue(edge,b);
@@ -213,24 +204,23 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootSco
   };
 
   $scope.hide = function(id,enable){
-    //header.hide = enable;
-    DataTable.hideHeader(id,enable);
-    refresh();
+    DataTable.hideHeader(id,enable,$scope.table);
+    refresh();    
   };
 
   $scope.sort = function(colName){
     $scope.orderProp = colName;
   };
 
-  //$scope.select = function(id,field){      
-  //  $scope.formObj = angular.copy(currentMap()[id]);
-  //};
+  function refresh(){
+    $scope.headers = DataTable.getMultiLevelHeaders($scope.table);
+    $scope.data = DataTable.getData($scope.table);
+    $scope.edges = DataTable.getEdgeHeaders($scope.table)
 
-  //var modalInstance;
+  };
 
   $scope.dblClickRow = function(obj){
-    $rootScope.$broadcast('SOME_TAG', 'your value'); //doesn't work 
-    $location.path('/edit/' + obj.id);
+    $location.path('/edit/' + $scope.table + '/' + obj.id);
   }
 
   /*
@@ -248,48 +238,31 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$rootSco
     });
   };
   */
-
-  /*
-  $scope.$on('$locationChangeStart', function(event, newUrl, oldUrl) {
-    event.preventDefault();
-  });
-  */
 }]).
-controller('FormCtrl', ['$scope','$routeParams','$location','DataTable', function($scope,$routeParams,$location,DataTable){
+controller('FormCtrl', ['$scope','$routeParams','$location','DataTable', 
+  function($scope,$routeParams,$location,DataTable){
 
-  if(!DataTable.isInit){
-    $location.path('/data');
-    return;
-  } 
-
-  //$scope.mapOfData = DataTable.mapOfData;
   var id = $routeParams.id;
-  $scope.obj = DataTable.currData()[id];
-  $scope.table = DataTable.currTable;
-  //$scope.headers = DataTable.currHeaders();  
-
-  /*
-  $scope.$on('SOME_TAG', function(response) {
-    console.log(response);
-  });
-  */
+  $scope.table = $routeParams.table; //get it from URL for easy debugging
+  //$scope.obj = _.clone(DataTable.getData($scope.table)[id]);
+  $scope.id = id;
+  
 
   $scope.clone = function(){          
-    DataTable.add($scope.obj);
+    DataTable.add($scope.obj,$scope.table);
     $location.path('/data');
   };
 
   $scope.update = function(){          
-    DataTable.update($scope.obj);
+    DataTable.update($scope.obj,$scope.table);
     $location.path('/data');
   };
 
   $scope.delete = function(){ 
-    //remove(formObj);
     //soft delete
     var obj = $scope.obj;
     obj['$ops'] = 'delete';
-    DataTable.update(oj);
+    DataTable.update(obj,$scope.table);
     $location.path('/data');
   };
 
@@ -298,25 +271,32 @@ controller('FormCtrl', ['$scope','$routeParams','$location','DataTable', functio
   };
 
 }]).
-directive('dynamicEditForm',['DataTable','RecursionHelper', function(DataTable,RecursionHelper) {
-  function link(scope, element, attrs) {
-    scope.mapOfData = DataTable.mapOfData;
-    scope.headers = DataTable.getHeader(scope.dheader.ref);
-    //scope.obj = 
+directive('dynamicEditForm',['RecursionHelper','DataTable', function(RecursionHelper,DataTable) {
+  function link(scope, element, attrs, FormCtrl) {
+    //scope.mapOfData = DataTable.mapOfData;
+    //scope.headers = DataTable.getHeader(scope.dheader.ref);    
+    var dTable = DataTable.getDataTable();
+    scope.mapOfData = dTable.mapOfData;
+    var tableData = dTable.getData(scope.table);
+    scope.obj = _.clone(tableData[scope.id]);
+    scope.headers = dTable.getHeader(scope.table);
   }
 
   return {
-    restrict: 'AEC',
+    restrict: 'E',
     scope: {
-      obj: '=',
-      dheader: '=',
-      parent: '=',
+      //require: '^FormCtrl',
+      id: '=',
+      table: '=',
+      parent: '=', //for linking back
     },
     templateUrl: 'views/edit-form-inner.html',
     compile: function(element) {
       // Use the compile function from the RecursionHelper,
       // And return the linking function(s) which it returns
       return RecursionHelper.compile(element,link);
+    },
+    controller: function($scope){
     },
     //link: link, //doesn't work now that we override compile
   }
@@ -337,18 +317,23 @@ filter('custom',function(){
 }).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider
-  .when('/data', {
+  .when('/data/:table?', {
     templateUrl: 'views/data-table.html',
     controller : 'DataTableCtrl',
     resolve : {
       DataTable : function(DataTable){
-        return DataTable.getDataTable();
+        return DataTable.getPromise();
       },
     },
   })
-  .when('/edit/:id', {
+  .when('/edit/:table/:id', {
     templateUrl: 'views/edit-form.html',
     controller : 'FormCtrl',
+    resolve : {
+      DataTable : function(DataTable){
+        return DataTable.getPromise();
+      },
+    },
   })  
   .when('/test', {
     templateUrl: 'views/test.html',

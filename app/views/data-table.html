@@ -3,7 +3,7 @@
   <div class="col-sm-4">
     <div class='form-group'>
       <label class='control-label'>Select Table</label>
-      <select class='form-control' ng-model='currentTable' ng-options="t for t in tables">
+      <select class='form-control' ng-model='table' ng-options="t for t in DataTable.getTableNames()">
         
       </select>      
     </div>
@@ -17,11 +17,11 @@
     </div>
   </div>
 
-  <div class="col-sm-4">
+  <div class='col-sm-4'>
     <div class='form-group'>
       <label class=' control-label'>Sort</label>     
       <select class='form-control' ng-model="orderBy">
-        <option ng:repeat="k in cols" value="{{k.obj.id}}">{{k.obj.id}}</option>
+        <option ng:repeat="k in edges" value="{{k.obj.id}}">{{k.obj.id}}</option>
       </select>
     </div>
   </div>
@@ -41,7 +41,7 @@
     </thead>
     <tbody>
         <tr class='repeated-item' ng-class='rowClass(v)' ng:repeat='v in data | custom:v:filterRef track by v.id'>
-          <td ng:repeat='k in cols' class='repeated-item' ng-dblclick='dblClickRow(v)'>{{translate(k,v)}}</td>
+          <td ng:repeat='k in edges' class='repeated-item' ng-dblclick='dblClickRow(v)'>{{translate(k,v)}}</td>
         </tr>
     </tbody>  
   </table>
