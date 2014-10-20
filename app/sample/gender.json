@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "value": "Male",
+        "desc": "Boy / Man"
+    },
+    {
+        "id": 2,
+        "value": "Female",
+        "desc": "Girl / Woman"
+    },
+    {
+        "id": 3,
+        "value": "N.A.",
+        "desc": "Company"
+    }
+]

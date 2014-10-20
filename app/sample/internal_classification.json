@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "value": "CashOnly",
+        "desc": "Cash Sales only, No Hirepurchase"
+    },
+    {
+        "id": 2,
+        "value": "NoSales",
+        "desc": "Do not sell to this customer"
+    },
+    {
+        "id": 3,
+        "value": "OverDue",
+        "desc": "Outstanding amount overdue"
+    }
+]

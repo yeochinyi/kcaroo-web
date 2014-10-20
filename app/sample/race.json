@@ -1,0 +1,22 @@
+[
+    {
+        "id": 1,
+        "value": "Chinese",
+        "desc": "Chinese"
+    },
+    {
+        "id": 2,
+        "value": "Malay",
+        "desc": "Malay"
+    },
+    {
+        "id": 3,
+        "value": "Indian",
+        "desc": "Indian"
+    },
+    {
+        "id": 4,
+        "value": "N.A.",
+        "desc": "Company"
+    }
+]

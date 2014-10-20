@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "value": "Trade-In",
+        "desc": "Trade-In "
+    },
+    {
+        "id": 2,
+        "value": "Purchase Only",
+        "desc": "Purchase only"
+    },
+    {
+        "id": 3,
+        "value": "Repo",
+        "desc": "Repocessed Vehicle"
+    },
+    {
+        "id": 4,
+        "value": "PI",
+        "desc": "Parallel Imported"
+    },
+    {
+        "id": 5,
+        "value": "Scrap",
+        "desc": "Scrap"
+    }
+]

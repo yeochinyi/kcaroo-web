@@ -1,0 +1,27 @@
+[
+    {
+        "id": 1,
+        "value": "Petrol",
+        "desc": "Petrol"
+    },
+    {
+        "id": 2,
+        "value": "Diesel",
+        "desc": "Diesel"
+    },
+    {
+        "id": 3,
+        "value": "Hybrid",
+        "desc": "Hybrid"
+    },
+    {
+        "id": 4,
+        "value": "CNG",
+        "desc": "Compressed Natural Gas"
+    },
+    {
+        "id": 5,
+        "value": "Battery",
+        "desc": "Battery"
+    }
+]

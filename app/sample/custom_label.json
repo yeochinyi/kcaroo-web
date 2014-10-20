@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "contact_info_label_1": "contact_info_label_1",
+        "contact_info_label_2": "contact_info_label_2",
+        "contact_info_label_3": "contact_info_label_3",
+        "contact_info_label_4": "contact_info_label_4",
+        "contact_info_label_5": "contact_info_label_5",
+        "contact_info_label_6": "contact_info_label_6",
+        "staff_label_1": "staff_label_1",
+        "staff_label_2": "staff_label_2",
+        "staff_label_3": "staff_label_3",
+        "staff_label_4": "staff_label_4",
+        "staff_label_5": "staff_label_5",
+        "staff_label_6": "staff_label_6",
+        "vehicle_label_1": "vehicle_label_1",
+        "vehicle_label_2": "vehicle_label_2",
+        "vehicle_label_3": "vehicle_label_3",
+        "vehicle_label_4": "vehicle_label_4",
+        "vehicle_label_5": "vehicle_label_5",
+        "vehicle_label_6": "vehicle_label_6",
+        "sales_and_purchase_label_1": "sales_and_purchase_label_1",
+        "sales_and_purchase_label_2": "sales_and_purchase_label_2",
+        "sales_and_purchase_label_3": "sales_and_purchase_label_3",
+        "sales_and_purchase_label_4": "sales_and_purchase_label_4",
+        "sales_and_purchase_label_5": "sales_and_purchase_label_5",
+        "sales_and_purchase_label_6": "sales_and_purchase_label_6"
+    }
+]

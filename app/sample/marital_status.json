@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "value": "Single",
+        "desc": "Single / never married"
+    },
+    {
+        "id": 2,
+        "value": "Married",
+        "desc": "Married"
+    },
+    {
+        "id": 3,
+        "value": "Divorce ",
+        "desc": "Divorce"
+    },
+    {
+        "id": 4,
+        "value": "Annulment",
+        "desc": "Declaring a marriage null and void"
+    },
+    {
+        "id": 5,
+        "value": "Widow",
+        "desc": "woman whose spouse has died"
+    },
+    {
+        "id": 6,
+        "value": "widower ",
+        "desc": "man whose spouse has died"
+    },
+    {
+        "id": 7,
+        "value": "N.A.",
+        "desc": "Company"
+    }
+]

@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "value": "Administrator",
+        "desc": "Administrator Group with all \"Yes\" Right"
+    },
+    {
+        "id": 2,
+        "value": "Guest",
+        "desc": "Guest Group with all \"No\" Right"
+    },
+    {
+        "id": 3,
+        "value": "ReadOnly",
+        "desc": "ReadOnly Group with all \"View\" rights only"
+    }
+]

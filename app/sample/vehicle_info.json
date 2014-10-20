@@ -1,0 +1,12 @@
+[
+    {
+        "id": 1,
+        "value": "R",
+        "desc": "Resident"
+    },
+    {
+        "id": 2,
+        "value": "PR",
+        "desc": "Permenant Resident"
+    }
+]

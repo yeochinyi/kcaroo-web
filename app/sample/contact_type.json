@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "value": "Vendor",
+        "desc": "Supplier / Vendor"
+    },
+    {
+        "id": 2,
+        "value": "Customer",
+        "desc": "Customer / Vehicle buyer / Seller"
+    },
+    {
+        "id": 3,
+        "value": "All",
+        "desc": "Regardless is vendor / Customer"
+    }
+]

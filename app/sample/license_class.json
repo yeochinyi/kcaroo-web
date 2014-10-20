@@ -1,0 +1,47 @@
+[
+    {
+        "id": 1,
+        "value": 1.0,
+        "desc": "Class 1: Invalid Carriages (defunct category)"
+    },
+    {
+        "id": 2,
+        "value": "2B",
+        "desc": "Class 2B: Motor cycles with an engine capacity not exceeding 200cc."
+    },
+    {
+        "id": 3,
+        "value": "2A",
+        "desc": "Class 2A: Motor cycles with an engine capacity between 201 cc and 400cc."
+    },
+    {
+        "id": 4,
+        "value": 2.0,
+        "desc": "Class 2: Motor cycles with an engine capacity exceeding 400cc."
+    },
+    {
+        "id": 5,
+        "value": 3.0,
+        "desc": "Class 3: \ni) Motor Cars <= 3000\u00a0kg with <= 7 passengers, exclusive of the driver; \nii) and Motor Tractors and other Motor Vehicles <= 2500\u00a0kg."
+    },
+    {
+        "id": 6,
+        "value": "3A",
+        "desc": "Class 3A: \ni) Motor Cars without clutch pedals <= 3000\u00a0kg with <= 7 passengers, exclusive of the driver; \nii) and Motor Tractors and other Motor Vehicles without clutch pedals of unladen weight <= 2500\u00a0kg."
+    },
+    {
+        "id": 7,
+        "value": "4A",
+        "desc": "Class 4A: Omnibuses"
+    },
+    {
+        "id": 8,
+        "value": 4.0,
+        "desc": "Class 4: Heavy Motor cars and Motor Tractors > 2500\u00a0kg."
+    },
+    {
+        "id": 9,
+        "value": 5.0,
+        "desc": "Class 5: Motor Vehicles not constructed to carry any load and the unladen weight > 7250\u00a0kg."
+    }
+]

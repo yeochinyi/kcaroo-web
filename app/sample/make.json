@@ -1,0 +1,72 @@
+[
+    {
+        "id": 1,
+        "value": "Aprilia",
+        "desc": "Aprilia"
+    },
+    {
+        "id": 2,
+        "value": "BMW",
+        "desc": "Bavarian Motor Works"
+    },
+    {
+        "id": 3,
+        "value": "Cagiva",
+        "desc": "Cagiva"
+    },
+    {
+        "id": 4,
+        "value": "Cosa",
+        "desc": "Cosa"
+    },
+    {
+        "id": 5,
+        "value": "Daelim",
+        "desc": "Daelim"
+    },
+    {
+        "id": 6,
+        "value": "Ducati",
+        "desc": "Ducati"
+    },
+    {
+        "id": 7,
+        "value": "Gas Gas",
+        "desc": "Gas Gas"
+    },
+    {
+        "id": 8,
+        "value": "Harley Davidson",
+        "desc": "Harley Davidson"
+    },
+    {
+        "id": 9,
+        "value": "Honda",
+        "desc": "Honda"
+    },
+    {
+        "id": 10,
+        "value": "Husgvarna",
+        "desc": "Husgvarna"
+    },
+    {
+        "id": 11,
+        "value": "Kawasaki",
+        "desc": "Kawasaki"
+    },
+    {
+        "id": 12,
+        "value": "KTM",
+        "desc": "Kronreif Trunkrnpolz Mattigohofen"
+    },
+    {
+        "id": 13,
+        "value": "Kymco",
+        "desc": "Kymco"
+    },
+    {
+        "id": 14,
+        "value": "PGO",
+        "desc": "PGO (PiagGiO)"
+    }
+]

@@ -1,0 +1,11 @@
+[
+    {
+        "id": 1,
+        "name": "Subaru",
+        "make_refid": 1,
+        "vehicle_type_refid": 1,
+        "license_class_refid": 1,
+        "capacity_num": 1000.0,
+        "propell_refid": 1
+    }
+]

@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "value": "Bike",
+        "desc": "Bike"
+    },
+    {
+        "id": 2,
+        "value": "Car",
+        "desc": "Car"
+    },
+    {
+        "id": 3,
+        "value": "Lorry",
+        "desc": "Lorry"
+    },
+    {
+        "id": 4,
+        "value": "HPC",
+        "desc": "High Performance Car"
+    },
+    {
+        "id": 5,
+        "value": "CV",
+        "desc": "Commercial Vehicle"
+    },
+    {
+        "id": 6,
+        "value": "Van",
+        "desc": "Van"
+    },
+    {
+        "id": 7,
+        "value": "Bus",
+        "desc": "Bus"
+    }
+]

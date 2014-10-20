@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1,
+        "customer_code": "A",
+        "identification": "S123457",
+        "full_name_1": "Mark Lim",
+        "full_name_2": "",
+        "registered-address_refid": 1,
+        "mail-address_refid": 1,
+        "email": "mark.lim@gmail.com",
+        "contact_type_refid": 1,
+        "country_refid": 1,
+        "race_refid": 1,
+        "internal_classification_refid": 1,
+        "black_list_refid": 1,
+        "old_customer_code": "AA"
+    }
+]

@@ -1,0 +1,16 @@
+[
+    {
+        "id": 1,
+        "branch_code": "AAA",
+        "branch_name": "Serangoon",
+        "sub_ledger_code": "BBB",
+        "tel_num": 1234567.0,
+        "fax_num": 1234556.0
+    },
+    {
+        "branch_name": "",
+        "sub_ledger_code": "",
+        "tel_num": "",
+        "fax_num": ""
+    }
+]

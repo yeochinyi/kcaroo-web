@@ -1,0 +1,24 @@
+[
+    {
+        "id": 1,
+        "security_group_refid": 1,
+        "module": "contact_type",
+        "add": true,
+        "edit": true,
+        "delete": true,
+        "view": true,
+        "print": true,
+        "special": true
+    },
+    {
+        "id": 2,
+        "security_group_refid": 1,
+        "module": "gender",
+        "add": true,
+        "edit": true,
+        "delete": true,
+        "view": true,
+        "print": true,
+        "special": true
+    }
+]

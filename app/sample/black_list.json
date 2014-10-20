@@ -1,0 +1,32 @@
+[
+    {
+        "id": 1,
+        "value": "B",
+        "desc": "Bankrupt"
+    },
+    {
+        "id": 2,
+        "value": "A",
+        "desc": "Absconded Customer"
+    },
+    {
+        "id": 3,
+        "value": "L",
+        "desc": "Legal Case Pending"
+    },
+    {
+        "id": 4,
+        "value": "D",
+        "desc": "Discharge from Bankrupt"
+    },
+    {
+        "id": 5,
+        "value": "N",
+        "desc": "No New Hire Purchase"
+    },
+    {
+        "id": 6,
+        "value": "P",
+        "desc": "Pending for LOD"
+    }
+]

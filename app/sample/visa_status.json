@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "value": "R",
+        "desc": "Resident"
+    },
+    {
+        "id": 2,
+        "value": "PR",
+        "desc": "Permenant Resident"
+    },
+    {
+        "id": 3,
+        "value": "WP",
+        "desc": "Work Permit"
+    },
+    {
+        "id": 4,
+        "value": "EP",
+        "desc": "Employment Pass"
+    },
+    {
+        "id": 5,
+        "value": "DP",
+        "desc": "Dependant Pass"
+    },
+    {
+        "id": 6,
+        "value": "SP",
+        "desc": "S Pass"
+    },
+    {
+        "id": 7,
+        "value": "N.A.",
+        "desc": "Company"
+    }
+]
