@@ -57,7 +57,11 @@ factory('DataFactory',['$resource', function($resource) {
 }]).
 factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
-  var tables = ['dynamic_table_2','static_table_1','table_3'];
+  //var tables = ['dynamic_table_2','static_table_1','table_3'];
+  var tables = ['address','black_list','branch_info','contact_info','country','custom_label','gender',
+  'internal_classification','license_class','make','marital_status','model','nationality','propell',
+  'purchase_type','race','security_info','security_group','stock_master','vehicle_info','vehicle_type',
+  'visa_status'];
   var dTable = new DTable();
 
   var promises = [];

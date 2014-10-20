@@ -1,8 +1,8 @@
 import org.apache.poi.ss.usermodel.*
 @Grab(group='org.apache.poi', module='poi-ooxml', version='3.10.1')
-//@Grab(group='org.apache.poi', module='ooxml-schemas', version='1.1')
+@Grab(group='org.apache.poi', module='ooxml-schemas', version='1.1')
 
-def wb = WorkbookFactory.create(new File("data.xlsx"))
+def wb = WorkbookFactory.create(new File(args.length == 0 ? "data.xlsx" : args[0]))
 
 def parseFormula = {
     try{ 
@@ -51,10 +51,12 @@ for(def i=0; i < wb.numberOfSheets; i++){
             }
             else {
                 def header = h[ci]
-                if(header.endsWith("id")){
-                    p = (int) p
+                if(header != null && !header.trim().equals("")){
+	                if(header.endsWith("id")){
+	                    p = (int) p
+	                }
+	                v[header] = p                	
                 }
-                v[header] = p
             }
         }                    
     }
