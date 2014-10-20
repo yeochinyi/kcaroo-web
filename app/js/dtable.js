@@ -44,8 +44,9 @@ DTable.prototype = {
       ptr = ptr.parent;
     }
     
-    for(var i=0; i < parents.length;i++){      
-      var parent = parents[0];
+    //for some reason.. push seems to put the child in front of the parent.
+    for(var i=parents.length -1; i >= 0 ;i--){      
+      var parent = parents[i];
       var dataId = rowObj[parent.obj.dheader.id];
       var data = this.getData(parent.obj.dheader.ref);
       rowObj = data[dataId];
@@ -204,46 +205,47 @@ DTable.prototype = {
     return node.children.length !== 0; 
   },
 
-  //return 2 level array
   getMultiLevelHeaders : function(table){
-    var retObj = [];
-
+    //return uneven 2D array of multi level columns  
+    var tempArray = [];
     this.getHeaderTree(table).traverseDepth(function(node){
-      var level = node.level - 1;
-      var l = retObj[level];
-      if(_.isUndefined(l)){ //add next level array if none
+      var level = node.level - 1; //store for rowspan
+      var l = tempArray[level];
+      if(_.isUndefined(l)){ //add outer array to 2D
         l = [];
-        retObj[level] = l;        
+        tempArray[level] = l;        
       }
-
-      l.push(node);
-
-      return node.obj.hide; //cutoff fn
+      l.push(node); // add inner to 2D
+      if(_.isUndefined(node.parent.childrenCount)){
+        node.parent.childrenCount = 1;
+      }
+      else{
+       node.parent.childrenCount++; 
+      }
+      return node.obj.hide; //cutoff if hidden
     });
 
-    //return retObj;
-
-    var retObj2 = [];
-    var hasChildren = this.hasChildren;
-    var height = retObj.length;
+    var twoDArray = [];
+    var hasChildren = this.hasChildren; //link to outer fn
+    var height = tempArray.length;
 
     //convert for html table
     //only can do this here as we don't know subtree height before that.
-    for(var i=0; i<retObj.length;i++){
-      var innerArray = retObj[i];
-      var l2 = [];
-      retObj2.push(l2);
-      for(var j=0; j<innerArray.length;j++){
-        var node = innerArray[j];
-        l2.push(_.extend(
+    for(var i=0; i<tempArray.length;i++){
+      var outer = tempArray[i];
+      var l = [];
+      twoDArray.push(l);
+      for(var j=0; j<outer.length;j++){
+        var node = outer[j];
+        l.push(_.extend(
           {
             rowspan: (hasChildren(node) ? 1: height + 1 - node.level),
-            colspan: (!hasChildren(node) || node.hide ? 1 : node.children.length),
+            colspan: (_.isUndefined(node.childrenCount) ? 1 : node.childrenCount),
           },node)
         );
       }
     }    
-    return retObj2;
+    return twoDArray;
   },  
   
 };

@@ -57,7 +57,7 @@ factory('DataFactory',['$resource', function($resource) {
 }]).
 factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
-  var tables = ['dynamic_table_2','static_table_1'];
+  var tables = ['dynamic_table_2','static_table_1','table_3'];
   var dTable = new DTable();
 
   var promises = [];
@@ -77,15 +77,7 @@ factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
     },
     getDataTable: function(){
       return dTable;
-    },
-    //promise: $q.all(promises),
-    //getEdgeHeaders: dTable.getEdgeHeaders,
-    //getMultiLevelHeaders: dTable.getMultiLevelHeaders,
-    //getData: dTable.getData,
-    //getTableNames: dTable.getTableNames,
-    //getCurrent: dTable.getCurrent,
-    //getRefValue: dTable.getRefValue,
-    //getHeaderTree: dTable.getHeaderTree,    
+    }, 
   };
 
   /*
@@ -239,23 +231,56 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$routePa
   };
   */
 }]).
-controller('FormCtrl', ['$scope','$routeParams','$location','DataTable', 
-  function($scope,$routeParams,$location,DataTable){
+/*
+directive('dynamicMainForm',['DataTable', function(DataTable) {
+  return {
+    restrict: 'E',
+    transclude: true,
+    scope: {},
+    controller: function($scope,$routeParams,$location,DataTable){
 
+      var id = $routeParams.id;
+      $scope.table = $routeParams.table; //get it from URL for easy debugging
+      $scope.id = id;
+      
+      $scope.clone = function(){          
+        DataTable.add($scope.obj,$scope.table);
+        $location.path('/data');
+      };
+
+      $scope.update = function(){          
+        DataTable.update($scope.obj,$scope.table);
+        $location.path('/data');
+      };
+
+      $scope.delete = function(){ 
+        //soft delete
+        var obj = $scope.obj;
+        obj['$ops'] = 'delete';
+        DataTable.update(obj,$scope.table);
+        $location.path('/data');
+      };
+
+      $scope.clear = function(){      
+        $scope.obj = {};
+      };
+    },
+  };
+}]).*/
+controller('FormCtrl',['$scope','$routeParams','$location','DataTable', function($scope,$routeParams,$location,DataTable) {
   var id = $routeParams.id;
+   var dTable = DataTable; // for recursiveUpdate
   $scope.table = $routeParams.table; //get it from URL for easy debugging
-  //$scope.obj = _.clone(DataTable.getData($scope.table)[id]);
   $scope.id = id;
-  
 
-  $scope.clone = function(){          
-    DataTable.add($scope.obj,$scope.table);
-    $location.path('/data');
+  $scope.clone = function(){
+    recursiveAdd($scope.obj,$scope.table);
+    goToTable();
   };
 
   $scope.update = function(){          
-    DataTable.update($scope.obj,$scope.table);
-    $location.path('/data');
+    recursiveAdd($scope.obj,$scope.table,true);
+    goToTable();
   };
 
   $scope.delete = function(){ 
@@ -263,32 +288,75 @@ controller('FormCtrl', ['$scope','$routeParams','$location','DataTable',
     var obj = $scope.obj;
     obj['$ops'] = 'delete';
     DataTable.update(obj,$scope.table);
-    $location.path('/data');
+    goToTable();
+  };
+
+  $scope.cancel = function(){      
+    goToTable();
   };
 
   $scope.clear = function(){      
     $scope.obj = {};
   };
 
+  function goToTable(){
+    $location.path('/data/' + $scope.table);
+  }
+
+  //the diff b/w clone and update is only the 1st main call, we need to diff
+  //else it's recursive add all the way as we will never recursive update.
+  function recursiveAdd(obj,table,isUpdate){
+    var headers = dTable.getHeader(table);
+    _.each(headers, function(h){
+      // from the edit form somehow a 2nd level new object attribute is undefined... vs null.. strange.
+      if(h.isRefId() && (_.isNull(obj[h.id])||_.isUndefined(obj[h.id])) ){
+        var child = obj['$'+h.id]; //should have something
+        child = recursiveAdd(child,h.ref);
+        obj[h.id] = child.id;
+        obj['$'+h.id] = undefined; //erase
+      }
+    });
+
+    if(isUpdate){
+      DataTable.update(obj,table);
+    }
+    else{
+      var id = DataTable.add(obj,table);
+      return id;
+    }
+  }
 }]).
 directive('dynamicEditForm',['RecursionHelper','DataTable', function(RecursionHelper,DataTable) {
-  function link(scope, element, attrs, FormCtrl) {
-    //scope.mapOfData = DataTable.mapOfData;
-    //scope.headers = DataTable.getHeader(scope.dheader.ref);    
-    var dTable = DataTable.getDataTable();
-    scope.mapOfData = dTable.mapOfData;
-    var tableData = dTable.getData(scope.table);
-    scope.obj = _.clone(tableData[scope.id]);
-    scope.headers = dTable.getHeader(scope.table);
+  //directive fn are run once ?
+  function link(scope, element, attrs, dynamicMainForm) {    
+    var dTable = DataTable.getDataTable();  // needed due to promise nature of the call.
+    scope.mapOfData = dTable.mapOfData; //need to display values in form's select (link to foreign tables)
+    scope.headers = dTable.getHeader(scope.table); //form will loop this to show all fields    
+
+    //If id is given, this directive will get the obj from the cache
+    //If not, it will create a new obj and stick it to the parent with attr    
+    var id = scope.id;
+    if(_.isNull(id)||_.isUndefined(id)){
+      scope.obj = {};
+      var attr = scope.attr;
+      scope.parent['$'+attr] = scope.obj;
+    }
+    else{
+      var tableData = dTable.getData(scope.table); 
+      scope.obj =  _.clone(tableData[scope.id]); 
+      scope.target = scope.obj;
+    }
   }
 
   return {
     restrict: 'E',
     scope: {
-      //require: '^FormCtrl',
-      id: '=',
-      table: '=',
-      parent: '=', //for linking back
+      //require: '^dynamicMainForm',
+      id: '=', // numeric id
+      table: '=', // to show  which table
+      parent: '=', //for linking back to obj
+      attr: '=', // for linking back to obj's attr
+      target: '=target', //this is for linking the main form obj to the directive scope of the top obj.
     },
     templateUrl: 'views/edit-form-inner.html',
     compile: function(element) {
@@ -297,16 +365,22 @@ directive('dynamicEditForm',['RecursionHelper','DataTable', function(RecursionHe
       return RecursionHelper.compile(element,link);
     },
     controller: function($scope){
+      $scope.checkNull = function(obj){
+        return _.isNull(obj) || _.isUndefined(obj);
+      };
     },
     //link: link, //doesn't work now that we override compile
   }
 }]).
 filter('cleanCol',function(){
-  return function(input){    
-    //var table = extractTableName(input);
-    //var r =  table == null ? input : table;
-    //return r.toUnderscore();
-    return input;
+  return function(text){    
+    var s = text.split('_');
+    var r = '';
+    for(var i=0; i < s.length; i++){
+      var t = s[i];
+      r += t.charAt(0).toUpperCase() + t.slice(1) + ' ';
+    }
+    return r;
   }
 }).
 filter('custom',function(){ 

@@ -3,36 +3,42 @@
         "id": 1,
         "name": "st1 name 1",
         "desc": "st1 desc 1",
-        "some_col": "st1 some_col 1"
+        "some_col": "st1 some_col 1",
+        "table_3_refid": 6
     },
     {
         "id": 2,
         "name": "st1 name 2",
         "desc": "st1 desc 2",
-        "some_col": "st1 some_col 2"
+        "some_col": "st1 some_col 2",
+        "table_3_refid": 5
     },
     {
         "id": 3,
         "name": "st1 name 3",
         "desc": "st1 desc 3",
-        "some_col": "st1 some_col 3"
+        "some_col": "st1 some_col 3",
+        "table_3_refid": 3
     },
     {
         "id": 4,
         "name": "st1 name 4",
         "desc": "st1 desc 4",
-        "some_col": "st1 some_col 4"
+        "some_col": "st1 some_col 4",
+        "table_3_refid": 2
     },
     {
         "id": 5,
         "name": "st1 name 5",
         "desc": "st1 desc 5",
-        "some_col": "st1 some_col 5"
+        "some_col": "st1 some_col 5",
+        "table_3_refid": 1
     },
     {
         "id": 6,
         "name": "st1 name 6",
         "desc": "st1 desc 6",
-        "some_col": "st1 some_col 6"
+        "some_col": "st1 some_col 6",
+        "table_3_refid": 4
     }
 ]

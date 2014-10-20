@@ -34,7 +34,7 @@
         <th ng:repeat='k in breadth' class='repeated-item' rowspan='{{k.rowspan}}' colspan='{{k.colspan}}' ng-class='{rotate_cell:k.obj.hide}'>
           <span ng-class='{rotate:k.obj.hide}' ng-click='sort(k.obj.id)'>
             <span class='glyphicon' ng-class='{"glyphicon-zoom-out": !k.obj.hide, "glyphicon-zoom-in": k.obj.hide}' ng-click='hide(k.obj.id,!k.obj.hide)'></span>
-            <span class='text-capitalize'>{{k.obj.dheader.named}}</span>            
+            <span>{{k.obj.dheader.named | cleanCol}} </span>            
           </span>
         </th>
       </tr>

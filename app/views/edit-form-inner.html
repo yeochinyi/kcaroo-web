@@ -1,22 +1,23 @@
 
-<!-- Need to ensure that it passes === test! -->
-obj = {{obj}},
-headers = {{headers}},
-table = {{table}}
-
+<!--
+obj = {{obj}},<BR>
+headers = {{headers}},<BR>
+table = {{table}},<BR>
+attr = {{attr}},<BR>
+-->
 <div class='well'>
 <div class='form-group' ng-repeat='k in headers'><!-- using only top breadth nodes -->
-    <label for='{{k.named}}' class='col-sm-2 control-label text-capitalize'>{{k.named}}</label>          
+    <label for='{{k.named}}' class='col-sm-2 control-label text-capitalize'>{{k.named | cleanCol}}</label>          
     <div class='col-sm-10'>
-      <div ng-if='!k.isRefId()'>
-        <input class='form-control' type='text' placeholder='Enter Text' ng-model='obj[k.id]' ng-disabled='k.id == "id"' ng-hide='obj[k.id] == undefined && k.id == "id"'>
+      <div ng-if='!k.isRefId()'> <!-- Normal Non-link fields -->
+        <input class='form-control' type='text' placeholder='Enter Text' ng-model='obj[k.id]' ng-disabled='k.id === "id"'>
       </div>
-      <div ng-if='k.isRefId()' class='slide-animate'>
+      <div ng-if='k.isRefId()'> <!-- Ref link fields -->
         <select class='form-control' ng-model='obj[k.id]' ng-options='v.id as v.name for (k,v) in mapOfData[k.ref]'>
           <option value="">-- Create New --</option>
-        </select>
-        <span ng-show='obj[k.id] === null || _.isObject(obj[k.id])'>
-          <dynamic-edit-form table='k.ref' id='obj[k.id]' parent='obj'></dynamic-edit-form>
+        </select>obj[k.id]={{obj[k.id]}}
+        <span ng-if='checkNull(obj[k.id])' > <!-- obj[k.id]  _.isNull doesn't work here ??? -->
+          <dynamic-edit-form id='obj[k.id]' table='k.ref' attr='k.id' parent='obj'></dynamic-edit-form>
         </span>
       </div>
     </div>
