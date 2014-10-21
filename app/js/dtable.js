@@ -150,7 +150,8 @@ DTable.prototype = {
 
     if(!node.obj.dheader.isRefId()) return;  
 
-    if(!doHide && !this.hasChildren(node)){
+    //if(!doHide && !this.hasChildren(node)){
+    if(!doHide && node.childrenCount === 0){
       var table = node.obj.dheader.ref;
       var refHeaders = this.getHeader(table);
 
@@ -188,10 +189,11 @@ DTable.prototype = {
 
   getEdgeHeaders: function(table){
     var edges = [];
-    var hasChildren = this.hasChildren;
+    //var hasChildren = this.hasChildren;    
 
     this.getHeaderTree(table).traverseDepth(function(node){
-      if(node.obj.hide || !hasChildren(node)){
+      //if(node.obj.hide || !hasChildren(node)){
+      if(node.obj.hide || node.childrenCount === 0){
         edges.push(node);
       }
       return node.obj.hide; //cutoff fn
@@ -200,33 +202,32 @@ DTable.prototype = {
     return edges;
   },
 
-  hasChildren : function(node){
-    if(_.isUndefined(node.children)) return false;
-    return node.children.length !== 0; 
-  },
-
   getMultiLevelHeaders : function(table){
     //return uneven 2D array of multi level columns  
     var tempArray = [];
     this.getHeaderTree(table).traverseDepth(function(node){
       var level = node.level - 1; //store for rowspan
       var l = tempArray[level];
+      node.childrenCount = 0; //reset childrenCount
       if(_.isUndefined(l)){ //add outer array to 2D
         l = [];
         tempArray[level] = l;        
       }
       l.push(node); // add inner to 2D
-      if(_.isUndefined(node.parent.childrenCount)){
-        node.parent.childrenCount = 1;
-      }
-      else{
-       node.parent.childrenCount++; 
-      }
       return node.obj.hide; //cutoff if hidden
     });
 
+    for(var i=tempArray.length - 1; i >= 0;i--){ //reverse from leafs upwards
+      var outer = tempArray[i];
+      for(var j=0; j<outer.length;j++){
+        var node = outer[j];        
+        node.parent.childrenCount+= (node.childrenCount === 0 ? 1 : node.childrenCount);
+      }
+    }
+
+
     var twoDArray = [];
-    var hasChildren = this.hasChildren; //link to outer fn
+    //var hasChildren = this.hasChildren; //link to outer fn
     var height = tempArray.length;
 
     //convert for html table
@@ -237,10 +238,11 @@ DTable.prototype = {
       twoDArray.push(l);
       for(var j=0; j<outer.length;j++){
         var node = outer[j];
+
         l.push(_.extend(
           {
-            rowspan: (hasChildren(node) ? 1: height + 1 - node.level),
-            colspan: (_.isUndefined(node.childrenCount) ? 1 : node.childrenCount),
+            rowspan: (node.childrenCount !== 0  ? 1: height + 1 - node.level), // if has children only need span 1 level.. if not it has to fill all
+            colspan: (node.childrenCount === 0 ? 1 : node.childrenCount), // need to span all children and grandchildren etc.. all future gens
           },node)
         );
       }

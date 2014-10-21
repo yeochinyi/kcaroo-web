@@ -57,7 +57,7 @@
     },
     {
         "id": 15,
-        "nationality": "Belarusian\u00a0or\u00a0Belarusan"
+        "nationality": "Belarusian\u00A0or\u00A0Belarusan"
     },
     {
         "id": 16,
@@ -157,7 +157,7 @@
     },
     {
         "id": 40,
-        "nationality": "Croat\u00a0or\u00a0Croatian"
+        "nationality": "Croat\u00A0or\u00A0Croatian"
     },
     {
         "id": 41,
@@ -365,7 +365,7 @@
     },
     {
         "id": 92,
-        "nationality": "Malagasy\u00a0or\u00a0Madagascan"
+        "nationality": "Malagasy\u00A0or\u00A0Madagascan"
     },
     {
         "id": 93,
@@ -405,7 +405,7 @@
     },
     {
         "id": 102,
-        "nationality": "Mon\u00e9gasque\u00a0or\u00a0Monacan"
+        "nationality": "Mon\u00E9gasque\u00A0or\u00A0Monacan"
     },
     {
         "id": 103,
@@ -477,7 +477,7 @@
     },
     {
         "id": 120,
-        "nationality": "Papua New Guinean\u00a0orGuinean"
+        "nationality": "Papua New Guinean\u00A0orGuinean"
     },
     {
         "id": 121,
@@ -517,7 +517,7 @@
     },
     {
         "id": 130,
-        "nationality": "Saudi Arabian\u00a0or\u00a0Saudi"
+        "nationality": "Saudi Arabian\u00A0or\u00A0Saudi"
     },
     {
         "id": 131,
@@ -529,7 +529,7 @@
     },
     {
         "id": 133,
-        "nationality": "Serb\u00a0or\u00a0Serbian"
+        "nationality": "Serb\u00A0or\u00A0Serbian"
     },
     {
         "id": 134,
@@ -549,7 +549,7 @@
     },
     {
         "id": 138,
-        "nationality": "Slovene\u00a0or\u00a0Slovenian"
+        "nationality": "Slovene\u00A0or\u00A0Slovenian"
     },
     {
         "id": 139,
@@ -601,7 +601,7 @@
     },
     {
         "id": 151,
-        "nationality": "Tajik\u00a0or\u00a0Tadjik"
+        "nationality": "Tajik\u00A0or\u00A0Tadjik"
     },
     {
         "id": 152,
@@ -633,7 +633,7 @@
     },
     {
         "id": 159,
-        "nationality": "Turkmen\u00a0or\u00a0Turkoman"
+        "nationality": "Turkmen\u00A0or\u00A0Turkoman"
     },
     {
         "id": 160,
@@ -649,11 +649,11 @@
     },
     {
         "id": 163,
-        "nationality": "UAE\u00a0/ Emirates /\u00a0Emirati"
+        "nationality": "UAE\u00A0/ Emirates /\u00A0Emirati"
     },
     {
         "id": 164,
-        "nationality": "UK /\u00a0British"
+        "nationality": "UK /\u00A0British"
     },
     {
         "id": 165,
@@ -697,7 +697,7 @@
     },
     {
         "id": 175,
-        "nationality": "Za\u00efrean"
+        "nationality": "Za\u00EFrean"
     },
     {
         "id": 176,

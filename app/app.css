@@ -172,24 +172,24 @@ animate.
   border: 1px solid #ddd;
   border-collapse: separate;
   border-left: 0;
-  border-radius: 20px;
+  border-radius: 10px;
   border-spacing: 0px;
 }
 
 .table-curved thead:first-child tr:first-child th:first-child {
-  border-radius: 20px 0 0 0;
+  border-radius: 10px 0 0 0;
 }
 
 .table-curved thead:first-child tr:first-child th:last-child {
-  border-radius: 0 20px 0 0;
+  border-radius: 0 10px 0 0;
 }
 
 .table-curved tbody:last-child tr:last-child td:first-child {
-    border-radius: 0 0 0 20px;
+    border-radius: 0 0 0 10px;
 }
 
 .table-curved tbody:last-child tr:last-child td:last-child {
-    border-radius: 0 0 20px 0;
+    border-radius: 0 0 10px 0;
 }
 
 

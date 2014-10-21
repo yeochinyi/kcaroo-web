@@ -22,12 +22,12 @@
     {
         "id": 5,
         "value": 3.0,
-        "desc": "Class 3: \ni) Motor Cars <= 3000\u00a0kg with <= 7 passengers, exclusive of the driver; \nii) and Motor Tractors and other Motor Vehicles <= 2500\u00a0kg."
+        "desc": "Class 3: \ni) Motor Cars <= 3000\u00A0kg with <= 7 passengers, exclusive of the driver; \nii) and Motor Tractors and other Motor Vehicles <= 2500\u00A0kg."
     },
     {
         "id": 6,
         "value": "3A",
-        "desc": "Class 3A: \ni) Motor Cars without clutch pedals <= 3000\u00a0kg with <= 7 passengers, exclusive of the driver; \nii) and Motor Tractors and other Motor Vehicles without clutch pedals of unladen weight <= 2500\u00a0kg."
+        "desc": "Class 3A: \ni) Motor Cars without clutch pedals <= 3000\u00A0kg with <= 7 passengers, exclusive of the driver; \nii) and Motor Tractors and other Motor Vehicles without clutch pedals of unladen weight <= 2500\u00A0kg."
     },
     {
         "id": 7,
@@ -37,11 +37,11 @@
     {
         "id": 8,
         "value": 4.0,
-        "desc": "Class 4: Heavy Motor cars and Motor Tractors > 2500\u00a0kg."
+        "desc": "Class 4: Heavy Motor cars and Motor Tractors > 2500\u00A0kg."
     },
     {
         "id": 9,
         "value": 5.0,
-        "desc": "Class 5: Motor Vehicles not constructed to carry any load and the unladen weight > 7250\u00a0kg."
+        "desc": "Class 5: Motor Vehicles not constructed to carry any load and the unladen weight > 7250\u00A0kg."
     }
 ]

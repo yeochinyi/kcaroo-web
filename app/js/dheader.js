@@ -9,8 +9,8 @@
       Everything else will show a typeahead input type='text'
       **/
 
-//Data in there should be static for easy references by other logic
-DHeader.types = ['date','email','month','num','time','url','week','bool','refid'];
+//Data in there should be static for easy references by other logic .. most are supported by chrome except refid
+DHeader.types = ['color','date','datetime','email','month','number','range','time','url','week','bool','refid'];
 
 function DHeader (id){
   /** 

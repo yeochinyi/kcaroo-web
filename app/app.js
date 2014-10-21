@@ -6,8 +6,13 @@ angular.module('myApp', [
   'ngRoute',
   'ngAnimate',
   'ngResource',
+  'ngSanitize',
   'ui.bootstrap',
-  ]).
+  'ui.select',
+]).
+config(function(uiSelectConfig) {
+  uiSelectConfig.theme = 'select2';
+}).
 factory('RecursionHelper', ['$compile', function($compile){
   return {
     /**
@@ -49,6 +54,19 @@ factory('RecursionHelper', ['$compile', function($compile){
     }
   };
 }]).
+factory('Util',function() {
+  return {
+    toNormalCase: function(text){ //text is underscore case i.e text_test_1
+      var s = text.split('_');
+      var r = '';
+      for(var i=0; i < s.length; i++){
+        var t = s[i];
+        r += t.charAt(0).toUpperCase() + t.slice(1) + ' ';
+      }
+      return r;
+    },
+  }
+}).
 factory('DataFactory',['$resource', function($resource) {
   var p = $resource('sample/:table.json',{},{
     query: {method:'GET',params:{table:'table'},isArray:true},
@@ -58,7 +76,7 @@ factory('DataFactory',['$resource', function($resource) {
 factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
   //var tables = ['dynamic_table_2','static_table_1','table_3'];
-  var tables = ['address','black_list','branch_info','contact_info','country','custom_label','gender',
+  var tables = ['address','black_list','branch_info','contact_type','contact_info','country','custom_label','gender',
   'internal_classification','license_class','make','marital_status','model','nationality','propell',
   'purchase_type','race','security_info','security_group','stock_master','vehicle_info','vehicle_type',
   'visa_status'];
@@ -132,8 +150,8 @@ factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
   //return dTable;
 }]).
-controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$routeParams',
-  function($scope,DataTable,$modal,$location,$routeParams){  
+controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$routeParams','Util',
+  function($scope,DataTable,$modal,$location,$routeParams,Util){  
 
   $scope.table = $routeParams.table || DataTable.getTableNames()[0];
   $scope.DataTable = DataTable;
@@ -158,9 +176,11 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$routePa
     return '';
   };
 
+  $scope.getDisplay = Util.toNormalCase;
+
   //for some reason, it returns all data even in filter we pass in "v" (in data).
-  $scope.filterRef = function(data){
-    var query = $scope.query;
+  $scope.filterRef = function(data,query){
+    //var query = $scope.query;
     var retArray;
 
     //filtering
@@ -307,6 +327,8 @@ controller('FormCtrl',['$scope','$routeParams','$location','DataTable', function
     $location.path('/data/' + $scope.table);
   }
 
+
+
   //the diff b/w clone and update is only the 1st main call, we need to diff
   //else it's recursive add all the way as we will never recursive update.
   function recursiveAdd(obj,table,isUpdate){
@@ -372,25 +394,49 @@ directive('dynamicEditForm',['RecursionHelper','DataTable', function(RecursionHe
       $scope.checkNull = function(obj){
         return _.isNull(obj) || _.isUndefined(obj);
       };
+
+      $scope.getDisplay = function(obj){
+        if(_.has(obj,'name')) return obj.name;
+        if(_.has(obj,'value')) return obj.value;
+        var omit = _.omit(obj,function(v,k){
+          return k === 'id' || _.isFunction(v);
+        });
+        return _.values(omit).join(' ');
+      };
+
+      $scope.toArray = function(obj){ //for select2 conversion
+        return _.values(obj);
+      };
+
+      $scope.selectFilter = function(array,search){
+        var r = _.reduce(array,function(memo,obj){
+          var v = _.find(obj,function(v){
+            return _.isString(v) && v.indexOf(search) != -1;
+          });
+          if(!_.isUndefined(v)){
+            memo.push(obj);
+          }
+          return memo;
+        },[]);
+
+        //r.push({id:-1, name:'< Create New >'});
+
+        return r;
+      };
+
     },
     //link: link, //doesn't work now that we override compile
   }
 }]).
-filter('cleanCol',function(){
-  return function(text){    
-    var s = text.split('_');
-    var r = '';
-    for(var i=0; i < s.length; i++){
-      var t = s[i];
-      r += t.charAt(0).toUpperCase() + t.slice(1) + ' ';
-    }
-    return r;
-  }
-}).
+filter('cleanCol',['Util',function(Util){
+  return Util.toNormalCase;
+}]).
 filter('custom',function(){ 
-  return function(a,b,fn){
-    //console.log('a=' + _(a).prettyPrint() +',b=' + b +',fn=' + fn);
-    return fn(a);
+  return function(){
+    var array = arguments[0];
+    var value = arguments[1];
+    var fn = arguments[2];
+    return fn(array,value);
   }
 }).
 config(['$routeProvider', function($routeProvider) {

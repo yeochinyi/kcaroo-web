@@ -3,8 +3,7 @@
   <div class="col-sm-4">
     <div class='form-group'>
       <label class='control-label'>Select Table</label>
-      <select class='form-control' ng-model='table' ng-options="t for t in DataTable.getTableNames()">
-        
+      <select class='form-control' ng-model='table' ng-options="t as getDisplay(t) for t in DataTable.getTableNames()">
       </select>      
     </div>
   </div>
@@ -20,13 +19,13 @@
   <div class='col-sm-4'>
     <div class='form-group'>
       <label class=' control-label'>Sort</label>     
-      <select class='form-control' ng-model="orderBy">
-        <option ng:repeat="k in edges" value="{{k.obj.id}}">{{k.obj.id}}</option>
+      <select class='form-control' ng-model="orderBy" ng-options="k.obj.id as getDisplay(k.obj.id) for k in edges">
+        <!--option ng:repeat="k in edges" value="{{k.obj.id}}">{{k.obj.id}}</option-->
       </select>
     </div>
   </div>
 </div>
-
+<h5>Double click to edit</h5>
 <!--div class="panel panel-default"-->
   <table id='data-table' class='table table-bordered table-striped table-hover table-condensed table-curved'>
     <thead>
@@ -40,9 +39,10 @@
       </tr>
     </thead>
     <tbody>
-        <tr class='repeated-item' ng-class='rowClass(v)' ng:repeat='v in data | custom:v:filterRef track by v.id'>
+        <tr class='repeated-item' ng-class='rowClass(v)' ng:repeat='v in data | custom:query:filterRef track by v.id'>
           <td ng:repeat='k in edges' class='repeated-item' ng-dblclick='dblClickRow(v)'>{{translate(k,v)}}</td>
         </tr>
     </tbody>  
   </table>
+
 <!--/div-->
