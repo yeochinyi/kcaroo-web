@@ -150,6 +150,12 @@ factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
   //return dTable;
 }]).
+controller('LoginCtrl', ['$scope','$location',function($scope,$location){
+  $scope.login = function(){
+    $location.path('/data').replace();
+  };
+    
+}]).
 controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$routeParams','Util',
   function($scope,DataTable,$modal,$location,$routeParams,Util){  
 
@@ -255,42 +261,6 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$routePa
   };
   */
 }]).
-/*
-directive('dynamicMainForm',['DataTable', function(DataTable) {
-  return {
-    restrict: 'E',
-    transclude: true,
-    scope: {},
-    controller: function($scope,$routeParams,$location,DataTable){
-
-      var id = $routeParams.id;
-      $scope.table = $routeParams.table; //get it from URL for easy debugging
-      $scope.id = id;
-      
-      $scope.clone = function(){          
-        DataTable.add($scope.obj,$scope.table);
-        $location.path('/data');
-      };
-
-      $scope.update = function(){          
-        DataTable.update($scope.obj,$scope.table);
-        $location.path('/data');
-      };
-
-      $scope.delete = function(){ 
-        //soft delete
-        var obj = $scope.obj;
-        obj['$ops'] = 'delete';
-        DataTable.update(obj,$scope.table);
-        $location.path('/data');
-      };
-
-      $scope.clear = function(){      
-        $scope.obj = {};
-      };
-    },
-  };
-}]).*/
 controller('FormCtrl',['$scope','$routeParams','$location','DataTable', function($scope,$routeParams,$location,DataTable) {
   var id = $routeParams.id;
    var dTable = DataTable; // for recursiveUpdate
@@ -463,5 +433,9 @@ config(['$routeProvider', function($routeProvider) {
     templateUrl: 'views/test.html',
     controller : 'TestCtrl',
   })
-  .otherwise({redirectTo: '/data'});
+  .when('/login', {
+    templateUrl: 'views/kcaroo-login.html',
+    controller : 'LoginCtrl',
+  })
+  .otherwise({redirectTo: '/login'});
 }]);
