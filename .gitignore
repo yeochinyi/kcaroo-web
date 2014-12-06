@@ -1,7 +1,12 @@
-logs/*
-!.gitkeep
-node_modules/
-bower_components/
-tmp
-.DS_Store
-.idea
+# IDE Files
+#-------------------------
+/nbproject/
+.idea/*
+
+## Sublime Text cache files
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
