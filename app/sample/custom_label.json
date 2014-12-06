@@ -1,29 +1,42 @@
 [
     {
         "id": 1,
-        "contact_info_label_1": "contact_info_label_1",
-        "contact_info_label_2": "contact_info_label_2",
-        "contact_info_label_3": "contact_info_label_3",
-        "contact_info_label_4": "contact_info_label_4",
-        "contact_info_label_5": "contact_info_label_5",
-        "contact_info_label_6": "contact_info_label_6",
-        "staff_label_1": "staff_label_1",
-        "staff_label_2": "staff_label_2",
-        "staff_label_3": "staff_label_3",
-        "staff_label_4": "staff_label_4",
-        "staff_label_5": "staff_label_5",
-        "staff_label_6": "staff_label_6",
-        "vehicle_label_1": "vehicle_label_1",
-        "vehicle_label_2": "vehicle_label_2",
-        "vehicle_label_3": "vehicle_label_3",
-        "vehicle_label_4": "vehicle_label_4",
-        "vehicle_label_5": "vehicle_label_5",
-        "vehicle_label_6": "vehicle_label_6",
-        "sales_and_purchase_label_1": "sales_and_purchase_label_1",
-        "sales_and_purchase_label_2": "sales_and_purchase_label_2",
-        "sales_and_purchase_label_3": "sales_and_purchase_label_3",
-        "sales_and_purchase_label_4": "sales_and_purchase_label_4",
-        "sales_and_purchase_label_5": "sales_and_purchase_label_5",
-        "sales_and_purchase_label_6": "sales_and_purchase_label_6"
+        "type": "contact_info",
+        "label_1": "label_1_for contact_info",
+        "label_2": "label_1_for label_1_for contact_info",
+        "label_3": "label_1_for label_1_for contact_info",
+        "label_4": "label_1_for label_1_for contact_info",
+        "label_5": "label_1_for label_1_for contact_info",
+        "label_6": "label_1_for label_1_for contact_info"
+    },
+    {
+        "id": 2,
+        "type": "staff",
+        "label_1": "label_1_for staff",
+        "label_2": "label_1_for label_1_for staff",
+        "label_3": "label_1_for label_1_for staff",
+        "label_4": "label_1_for label_1_for staff",
+        "label_5": "label_1_for label_1_for staff",
+        "label_6": "label_1_for label_1_for staff"
+    },
+    {
+        "id": 3,
+        "type": "vehicle",
+        "label_1": "label_1_for vehicle",
+        "label_2": "label_1_for label_1_for vehicle",
+        "label_3": "label_1_for label_1_for vehicle",
+        "label_4": "label_1_for label_1_for vehicle",
+        "label_5": "label_1_for label_1_for vehicle",
+        "label_6": "label_1_for label_1_for vehicle"
+    },
+    {
+        "id": 4,
+        "type": "snp",
+        "label_1": "label_1_for snp",
+        "label_2": "label_1_for label_1_for snp",
+        "label_3": "label_1_for label_1_for snp",
+        "label_4": "label_1_for label_1_for snp",
+        "label_5": "label_1_for label_1_for snp",
+        "label_6": "label_1_for label_1_for snp"
     }
 ]

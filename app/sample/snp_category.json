@@ -1,0 +1,344 @@
+[
+    {
+        "id": 1,
+        "type": "N - New Vehicle",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "Yes",
+        "description": "Machine Only",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 2,
+        "type": "N - COE",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "No",
+        "description": "COE Paper",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 3,
+        "type": "N - PARF",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "No",
+        "description": "PARF Paper",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 4,
+        "type": "N - ARF",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "No",
+        "description": "Additional Registration Fees",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 5,
+        "type": "N - Road Tax",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "No",
+        "description": "Road Tax",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 6,
+        "type": "N - IU",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "Yes",
+        "description": "IU ",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 7,
+        "type": "N - Number Retention",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "No",
+        "description": "Number Retiontion",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 8,
+        "type": "N - Insurance",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "Yes",
+        "description": "Insurance Premium",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 9,
+        "type": "U - Used Vehicle",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "Yes",
+        "description": "Machine Only",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 10,
+        "type": "U - COE Renewal",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "No",
+        "description": "COE Renewal",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 11,
+        "type": "U - Road Tax Renewal",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "No",
+        "description": "Road Tax Renewal",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 12,
+        "type": "U - Number Retention",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "No",
+        "description": "Number Retention",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 13,
+        "type": "U - Insurance",
+        "code": 1233.0,
+        "ledger_code": "AR",
+        "taxable": "Yes",
+        "description": "Insurance Premium",
+        "ledger_desc": "Sales Of Vehicle"
+    },
+    {
+        "id": 14,
+        "type": "N - New Vehicle",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "Yes",
+        "description": "Machine Only",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 15,
+        "type": "N - COE",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "No",
+        "description": "COE Paper",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 16,
+        "type": "N - PARF",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "No",
+        "description": "PARF Paper",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 17,
+        "type": "N - ARF",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "No",
+        "description": "Additional Registration Fees",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 18,
+        "type": "N - Road Tax",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "No",
+        "description": "Road Tax",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 19,
+        "type": "N - IU",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "Yes",
+        "description": "IU ",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 20,
+        "type": "N - Number Retention",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "No",
+        "description": "Number Retiontion",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 21,
+        "type": "N - Insurance",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "Yes",
+        "description": "Insurance Premium",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 22,
+        "type": "U - Used Vehicle",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "Yes",
+        "description": "Machine Only",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 23,
+        "type": "U - COE Renewal",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "No",
+        "description": "COE Renewal",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 24,
+        "type": "U - Road Tax Renewal",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "No",
+        "description": "Road Tax Renewal",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 25,
+        "type": "U - Number Retention",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "No",
+        "description": "Number Retention",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 26,
+        "type": "U - Insurance",
+        "code": 1234.0,
+        "ledger_code": "AP",
+        "taxable": "Yes",
+        "description": "Insurance Premium",
+        "ledger_desc": "Cost Of Vehicle"
+    },
+    {
+        "id": 27,
+        "type": "HP Comm Received",
+        "code": 1235.0,
+        "ledger_code": "I",
+        "taxable": "No",
+        "description": "HP Commission Received",
+        "ledger_desc": "Misc Income"
+    },
+    {
+        "id": 28,
+        "type": "Insurance Commission Received",
+        "code": 1235.0,
+        "ledger_code": "I",
+        "taxable": "No",
+        "description": "Insurance Commission Received",
+        "ledger_desc": "Misc Income"
+    },
+    {
+        "id": 29,
+        "type": "Referral Comm Received",
+        "code": 1235.0,
+        "ledger_code": "I",
+        "taxable": "No",
+        "description": "Referral Commission Received",
+        "ledger_desc": "Misc Income"
+    },
+    {
+        "id": 30,
+        "type": "HP Comm Paid",
+        "code": 1236.0,
+        "ledger_code": "E",
+        "taxable": "No",
+        "description": "HP Commission Paid",
+        "ledger_desc": "Misc Expenses"
+    },
+    {
+        "id": 31,
+        "type": "Insurance Commission Paid",
+        "code": 1236.0,
+        "ledger_code": "E",
+        "taxable": "No",
+        "description": "Insurance Commission Paid",
+        "ledger_desc": "Misc Expenses"
+    },
+    {
+        "id": 32,
+        "type": "Referral Comm Paid",
+        "code": 1236.0,
+        "ledger_code": "E",
+        "taxable": "No",
+        "description": "Referral Commission Paid",
+        "ledger_desc": "Misc Expenses"
+    },
+    {
+        "id": 33,
+        "type": "P.Commision",
+        "code": 1237.0,
+        "ledger_code": "E",
+        "taxable": "No",
+        "description": "Purchase Salesman Commission Paid",
+        "ledger_desc": "Commission Paid"
+    },
+    {
+        "id": 34,
+        "type": "S.Commision",
+        "code": 1237.0,
+        "ledger_code": "E",
+        "taxable": "No",
+        "description": "Sales Salesman Commission Paid",
+        "ledger_desc": "Commission Paid"
+    },
+    {
+        "id": 35,
+        "type": "B.Share1",
+        "code": 1237.0,
+        "ledger_code": "E",
+        "taxable": "No",
+        "description": "Broker Profit and Lost Sharing 1",
+        "ledger_desc": "Commission Paid"
+    },
+    {
+        "id": 36,
+        "type": "B.Share2",
+        "code": 1237.0,
+        "ledger_code": "E",
+        "taxable": "No",
+        "description": "Broker Profit and Lost Sharing 2",
+        "ledger_desc": "Commission Paid"
+    },
+    {
+        "id": 37,
+        "type": "APIN",
+        "code": 1238.0,
+        "ledger_code": "PV",
+        "taxable": "No",
+        "description": "Payment to offset AP",
+        "ledger_desc": "Account Payable"
+    },
+    {
+        "id": 38,
+        "type": "ARIN",
+        "code": 1239.0,
+        "ledger_code": "RV",
+        "taxable": "No",
+        "description": "Received to offset AR",
+        "ledger_desc": "Account Receivable"
+    }
+]

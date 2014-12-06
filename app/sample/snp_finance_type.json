@@ -1,0 +1,26 @@
+[
+    {
+        "id": 1,
+        "type": "Income"
+    },
+    {
+        "id": 2,
+        "type": "Expense"
+    },
+    {
+        "id": 3,
+        "type": "AP"
+    },
+    {
+        "id": 4,
+        "type": "AR"
+    },
+    {
+        "id": 5,
+        "type": "PV"
+    },
+    {
+        "id": 6,
+        "type": "RV"
+    }
+]

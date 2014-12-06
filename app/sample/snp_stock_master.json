@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "stock_id": 111,
+        "purchase_type_refid": 1,
+        "vehicle_number_rev": 1.0,
+        "branch_info_refid": 1,
+        "purchase_info-snp_detail_refid": 1,
+        "purchase_f_s_amount": 1234.0,
+        "purchase_f_s_with-contact_info_refid": 1,
+        "sales_info-snp_detail_refid": 2,
+        "sales_ask_price": 1200.0,
+        "sales_min_price": 1000.0,
+        "custom_value_refid": 1,
+        "remark": "Testing"
+    }
+]

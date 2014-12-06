@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "snp_finance_type_refid": 1,
+        "contact_info_refid": 1,
+        "snp_category_refid": 1,
+        "ledger_code": 123.0,
+        "sub_ledger": 456.0,
+        "voucher_num": 12345.0,
+        "voucher_date": "2004-12-31T16:00:00+0000",
+        "cheque_num": "a1234",
+        "cheque_date": "2004-12-31T16:00:00+0000",
+        "ref_num": 456456.0,
+        "tax_method_ref_id": 1,
+        "qty": 2.0,
+        "tax_percent": 10.0,
+        "unit_value": 10000.0,
+        "tax_value": 10.0,
+        "total_value": 10000.0,
+        "grand_total": 50000.0,
+        "description": "none"
+    }
+]

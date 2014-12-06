@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "non-tax": 300.0,
+        "taxable": 10.0,
+        "tax_amount": 30.0,
+        "total": 330.0
+    },
+    {
+        "id": 2,
+        "non-tax": 4000.0,
+        "taxable": 10.0,
+        "tax_amount": 400.0,
+        "total": 4400.0
+    },
+    {
+        "id": 3,
+        "non-tax": 500.0,
+        "taxable": 10.0,
+        "tax_amount": 50.0,
+        "total": 550.0
+    },
+    {
+        "id": 4,
+        "non-tax": 600.0,
+        "taxable": 10.0,
+        "tax_amount": 60.0,
+        "total": 660.0
+    },
+    {
+        "id": 5,
+        "non-tax": 700.0,
+        "taxable": 10.0,
+        "tax_amount": 70.0,
+        "total": 770.0
+    },
+    {
+        "id": 6,
+        "non-tax": 800.0,
+        "taxable": 10.0,
+        "tax_amount": 80.0,
+        "total": 880.0
+    },
+    {
+        "id": 7,
+        "non-tax": 900.0,
+        "taxable": 10.0,
+        "tax_amount": 90.0,
+        "total": 990.0
+    },
+    {
+        "id": 8,
+        "non-tax": 1000.0,
+        "taxable": 10.0,
+        "tax_amount": 100.0,
+        "total": 1100.0
+    },
+    {
+        "id": 9,
+        "non-tax": 1210.0,
+        "taxable": 10.0,
+        "tax_amount": 121.0,
+        "total": 1331.0
+    },
+    {
+        "id": 10,
+        "non-tax": 1234.0,
+        "taxable": 10.0,
+        "tax_amount": 123.4,
+        "total": 1357.4
+    },
+    {
+        "id": 11,
+        "non-tax": 3000.0,
+        "taxable": 10.0,
+        "tax_amount": 300.0,
+        "total": 3300.0
+    },
+    {
+        "id": 12,
+        "non-tax": 4000.0,
+        "taxable": 10.0,
+        "tax_amount": 400.0,
+        "total": 4400.0
+    }
+]

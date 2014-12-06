@@ -76,14 +76,26 @@ factory('DataFactory',['$resource', function($resource) {
 factory('DataTable',['DataFactory','$q', function(DataFactory,$q) {
 
   //var tables = ['dynamic_table_2','static_table_1','table_3'];
-  var tables = ['address','black_list','branch_info','contact_type','contact_info','country','custom_label','gender',
-  'internal_classification','license_class','make','marital_status','model','nationality','propell',
-  'purchase_type','race','security_info','security_group','stock_master','vehicle_info','vehicle_type',
-  'visa_status'];
+  var tables = [
+  //'--Personal Static Data--',
+  'address','contact_type','contact_info','country','gender',
+  'marital_status','nationality','race','visa_status',
+  //'--Company Static Data--',
+  'branch_info','custom_label','custom_value','security_info','security_group',
+  '--Vehicle Static Data--',
+  'internal_classification','license_class','make','propell','black_list',
+  'vehicle_info','vehicle_type',
+  'model','purchase_type',
+  //'--SNP Module--',
+  'snp_category','snp_stock_master','snp_detail',
+  'snp_finance_detail','snp_finance_type','snp_finance_summary','snp_taxable',
+  'tax_method',
+  ];
   var dTable = new DTable();
 
   var promises = [];
   _.each(tables,function(table){
+    if(table.indexOf('--') == 0) return;
     var data = DataFactory.query({table:table});
     promises.push(data.$promise.then(function(data){
       dTable.addData(table,data);
@@ -167,6 +179,8 @@ controller('DataTableCtrl', ['$scope','DataTable','$modal','$location','$routePa
   $scope.$watch('table',function(newVal,oldVal){
 
     if(newVal == undefined) return;    
+
+    if(newVal.indexOf('--') == 0) return;
     //DataTable.setCurrent(newVal);
     refresh();    
   });  

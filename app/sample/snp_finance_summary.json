@@ -1,0 +1,25 @@
+[
+    {
+        "id": 1,
+        "ap_summary_total_payable": 1000.0,
+        "ap_summary_total_paid": 2000,
+        "ap_summary_balance": 1000.0,
+        "ar_summary_total_receivable": 1234.0,
+        "ar_summary_total_received": 4564.0,
+        "ar_summary_balance": 3000.0,
+        "salesman_commission_e_s-snp_taxable_refid": 1,
+        "salesman_commission_total-snp_taxable_refid": 2,
+        "broker_shares_1-snp_taxable_refid": 3,
+        "broker_shares_2-snp_taxable_refid": 4,
+        "broker_shares_total-snp_taxable_refid": 6,
+        "expenses-snp_taxable_refid": 7,
+        "income-snp_taxable_refid": 8,
+        "purchase-snp_taxable_refid": 9,
+        "sales-snp_taxable_refid": 10,
+        "total_cost-snp_taxable_refid": 11,
+        "total_revenue-snp_taxable_refid": 12,
+        "gross_pnl": 10000.0,
+        "total_tax_amount": 100.0,
+        "net_pnl": 9900.0
+    }
+]

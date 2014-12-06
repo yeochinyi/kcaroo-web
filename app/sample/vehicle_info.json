@@ -1,12 +1,37 @@
 [
     {
         "id": 1,
-        "value": "R",
-        "desc": "Resident"
-    },
-    {
-        "id": 2,
-        "value": "PR",
-        "desc": "Permenant Resident"
+        "vehicle_number": "SSS1231K",
+        "vehicle_type_refid": 1,
+        "make_refid": 1,
+        "model_refid": 1,
+        "year_of_manufacturer": 1999.0,
+        "capacity": 1000.0,
+        "color": "blue",
+        "revision_num": 1.0,
+        "license_class_refid": 1,
+        "propell_refid": 1,
+        "engine": "ID123",
+        "chasis": "ID4545",
+        "laden_kg": 999.0,
+        "unladen_kg": 888.0,
+        "original_reg_date": "2011-12-31T16:00:00+0000",
+        "reg_date": "2012-01-01T16:00:00+0000",
+        "num_of_transfer_ownership": 1.0,
+        "parf_exp_date": "2013-03-02T16:00:00+0000",
+        "road_tax_exp_date": "2013-03-02T16:00:00+0000",
+        "coe_exp_date": "2013-03-02T16:00:00+0000",
+        "coe_renewal_date": "2013-03-02T16:00:00+0000",
+        "coe_number": "35701-04-24T16:00:00+0000",
+        "omv": 50000.0,
+        "arf_percent": 10.0,
+        "new_or_used": "new",
+        "parf_amount": 2000.0,
+        "road_tax_amount": 1000.0,
+        "coe_amount": 10000.0,
+        "renewal_for_num_of_years": 10.0,
+        "iu_number": "ID23428",
+        "custom_value_refid": 1,
+        "remark": "Test Veh"
     }
 ]

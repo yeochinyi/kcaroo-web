@@ -1,0 +1,61 @@
+[
+    {
+        "id": 1,
+        "code": "P.SR",
+        "value_percent": 7.0,
+        "ledger_code": 1231.0,
+        "ledger_desc": "Input tax",
+        "description": "Std Rate for Purchase"
+    },
+    {
+        "id": 2,
+        "code": "S.SR",
+        "value_percent": 7.0,
+        "ledger_code": 1232.0,
+        "ledger_desc": "Output tax",
+        "description": "Std Rate for Sales"
+    },
+    {
+        "id": 3,
+        "code": "P.DM",
+        "value_percent": 3.5,
+        "ledger_code": 1231.0,
+        "ledger_desc": "Input tax",
+        "description": "Discount Rate for Purchase"
+    },
+    {
+        "id": 4,
+        "code": "S.DM",
+        "value_percent": 3.5,
+        "ledger_code": 1232.0,
+        "ledger_desc": "Output tax",
+        "description": "Discount Rate for Sales"
+    },
+    {
+        "id": 5,
+        "code": "GM",
+        "value_percent": 7.0,
+        "ledger_code": 1232.0,
+        "ledger_desc": "   ",
+        "description": "Gross"
+    },
+    {
+        "id": 6,
+        "code": "ZR",
+        "value_percent": 0.0,
+        "ledger_code": "N.A.",
+        "ledger_desc": "NA",
+        "description": "Applicable"
+    },
+    {
+        "id": 7,
+        "code": "NA",
+        "value_percent": 0.0,
+        "ledger_code": "N.A.",
+        "ledger_desc": "NA",
+        "description": "NA"
+    },
+    {
+        
+    }
+]
